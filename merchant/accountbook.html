@@ -7,8 +7,10 @@
         <base href="{$base_url}">
 		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
 		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/mobiscroll.custom-3.0.0-beta6.min.css"/>
 		<script src="{$static_url}js/jquery.min.js"></script>
 		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/mobiscroll.custom-3.0.0-beta6.min.js" type="text/javascript" charset="utf-8"></script>
 		<title>账本</title>
 	</head>
 
@@ -30,7 +32,7 @@
 			<div class="con-tab">
 				<div data-trade-list="0">
 					<div class="cell-normal">
-						{$date_limit}
+						<input type="text" name="" id="date_shouyi" value="{$date_limit}"/>
 						<div class="arrive"></div>
 						<span>选择日期</span>
 					</div>
@@ -38,7 +40,7 @@
 				</div>
 				<div data-trade-list="1" style="display:none">
 					<div class="cell-normal">
-						{$date_limit}
+						<input type="text" name="" id="date_zhichu" value="{$date_limit}"/>
 						<div class="arrive"></div>
 						<span>选择日期</span>
 					</div>
@@ -47,6 +49,14 @@
 			</div>
 		</div>
 	<script type="text/javascript">
+		$('#date_shouyi,#date_zhichu').mobiscroll().date({
+	       theme: 'mobiscroll',
+	       preset: 'date',
+	       lang: 'zh',
+	       display: 'bottom',
+	       controls: ['calendar'],
+	       dateFormat: 'yyyy-mm'
+	});
 	//全局变量
 	var type = 0, date_limit = '{$date_limit_format}', page = 1, allow = true, has_load = false;
 	</script> 
