@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/mobiscroll.custom-3.0.0-beta6.min.css"/>
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+        <script src="{$static_url}js/jquery.form.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/mobiscroll.custom-3.0.0-beta6.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{$static_url}js/layer_mobile/layer.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{$static_url}js/jweixin-1.2.0.js" type="text/javascript" charset="utf-8"></script>
+		<title>添加广告</title>
+	</head>
+	<body>
+		<div class="wrap">
+		<div id="select_show_box" hidden>
+				<div class="list-ticket merchants select"></div>
+			</div>
+			
+			<div class="info-title bgcol-orange">活动创建后不可修改，请认真填写!</div>
+            <div data-spm="current_coupon" class="list-ticket merchants" style="margin-top:15px" hidden></div>
+            <a data-spm="select_coupon" class="comm-btn-top" href="javascript:void(0)">
+				<div id="">
+					<img src="{$static_url}images/icon-add.png"/>
+				</div>选择优惠券
+			</a>
+            <form id="theform" name="theform" action="" method="post">
+			<div class="list-nav">
+				<a>
+					预发张数
+					<span>
+						<input type="tel" name="before_num" maxlength="4" value="" placeholder="请输入张数"/>&nbsp;&nbsp;张	
+					</span>
+				</a>
+				<p class="normal-title col-grey bgcol-trans">广告有效期</p>
+				<a>
+					开始时间<div class="arrive"></div><span><input type="text" name="start_time" id="date_start" value="" readonly placeholder="请选择"/></span>
+				</a>
+				<a>
+					结束时间<div class="arrive"></div><span><input type="text" name="end_time" id="date_end" value="" readonly placeholder="请选择"/></span>
+				</a>
+				<p class="normal-title col-grey bgcol-trans">广告费设置</p>
+				<!--<a>
+					每领取1张支付<span>0元</span>
+				</a>-->
+				<a>
+					每次核销实收金额<span><input type="number" name="commission_rate" maxlength="3" value="" placeholder=""/>&nbsp;&nbsp;%</span>
+				</a>
+				<a>
+					最低保底金额<span><input type="number" name="lowest_amount" maxlength="4" value="1" placeholder=""/>&nbsp;&nbsp;元</span>
+				</a>
+			</div>
+            <input class="" type="hidden" name="coupon_id" value="0">
+			<button type="submit" class="comm-btn">提交</button>
+            </form>
+		</div>
+	<script type="text/javascript">
+	//全局变量
+	var _appId = '{$signPackage.appId}';
+	var _timestamp = '{$signPackage.timestamp}';
+	var _nonceStr = '{$signPackage.nonceStr}';
+	var _signature = '{$signPackage.signature}';
+	var localId, thumb = '';
+	var page = 1, allow = true, has_load = false;
+    </script>
+    {literal}
+    <script type="text/javascript">
+	wx.config({
+		debug: false,
+		appId: _appId,
+		timestamp: _timestamp,
+		nonceStr: _nonceStr,
+		signature: _signature,
+		jsApiList: [
+			'chooseImage'
+		]
+	});
+	//取出图片
+	function takeThumb(localId) {
+		wx.getLocalImgData({
+			localId: localId,
+			success: function (res) {
+				thumb = res.localData;
+				$('[rel="upload-thumb"]').html('<img style="margin-top:1rem" src="' + thumb + '">');
+			}
+		});
+	}
+	//加载列表
+	function loadCoupon() {
+		if (allow && !has_load) {
+			has_load = true;
+			$.ajax({
+				async: true,
+				type: 'POST',
+				url: 'wx/merchant/advertiserloadcoupon',
+				data: {
+					'type': 1,
+					'page': page
+				},
+				dataType: 'JSON',
+				beforeSend: function() {},
+				success: function(json) {
+					has_load = false;
+					if (json.code > 0) {
+						if (page == 1 && json.code == 3) {
+							$('.list-ticket').html('<li><div class="no-data">暂无相关数据</div></li>');
+						}
+						allow = false;
+					} else {
+						$('.list-ticket').append(json.content);
+						$("[data-select-id]").unbind('click').on('click', function() {
+							$('input[name="coupon_id"]').val($(this).attr('data-select-id'));
+							$('[data-spm="current_coupon"]').html($(this).parent().html()).show();
+							$('[data-spm="select_coupon"]').hide();
+							$("#select_show_box").hide();
+						});
+						page++;
+					}
+				},
+				error: function() {
+					has_load = false;
+					$('.list-ticket').html('<li><div class="no-data">服务器内部错误</div></li>');
+				}
+			});
+		}
+	}
+    $(document).ready(function() {
+		$('#date_start').mobiscroll().calendar({
+			theme: 'mobiscroll',
+			lang: 'zh',
+			display: 'bottom',
+			controls: ['calendar'],
+			dateFormat: 'yyyy-mm-dd'
+		});
+		$('#date_end').mobiscroll().calendar({
+			theme: 'mobiscroll',
+			lang: 'zh',
+			display: 'bottom',
+			controls: ['calendar'],
+			dateFormat: 'yyyy-mm-dd'
+		});
+		//选择优惠券
+		$('[data-spm="current_coupon"],[data-spm="select_coupon"]').unbind('click').on('click', function(){
+			$("#select_show_box").show();
+			loadCoupon();
+		});
+		$("[data-select-id]").unbind('click').on('click', function(){
+			$('input[name="coupon_id"]').val($(this).attr('data-select-id'));
+			$('[data-spm="current_coupon"]').html($(this).parent().html()).show();
+			$('[data-spm="select_coupon"]').hide();
+			$("#select_show_box").hide();
+		});
+		//选择推广图片
+		$('[rel="upload-thumb"]').unbind('click').on('click', function() {
+			wx.chooseImage({
+				count: 1,
+				success: function (res) {
+					localId = res.localIds[0].toString();
+					takeThumb(localId);
+				}
+			});
+		});
+		//提交
+		$('#theform').on('submit', function() {
+			var is_error = false;
+			var coupon_id = parseInt($('input[name="coupon_id"]').val());
+			var before_num = $.trim($('input[name="before_num"]').val());
+			var start_time = $.trim($('input[name="start_time"]').val());
+			var end_time = $.trim($('input[name="end_time"]').val());
+			if (isNaN(coupon_id) || coupon_id <= 0) {
+				is_error = true;
+				layer.open({
+					content: '请选择优惠券',
+					skin: 'msg',
+					time: 2
+				});
+				return false;
+			}
+			if (before_num.length <= 0) {
+				is_error = true;
+				layer.open({
+					content: '请输入预发数量',
+					skin: 'msg',
+					time: 2
+				});
+				return false;
+			}
+			if (start_time.length <= 0) {
+				is_error = true;
+				layer.open({
+					content: '请输入活动开始时间',
+					skin: 'msg',
+					time: 2
+				});
+				return false;
+			}
+			if (end_time.length <= 0) {
+				is_error = true;
+				layer.open({
+					content: '请输入活动结束时间',
+					skin: 'msg',
+					time: 2
+				});
+				return false;
+			}
+			if (!is_error) {
+				var opts = {
+					async: true,
+					type: 'POST',
+					url: 'wx/merchant/addadvertiser',
+					data: {
+						'thumb': thumb
+					},
+					dataType: 'JSON',
+					beforeSend: function() {},
+					success: function(json) {
+						if (json.code > 0) {
+							layer.open({
+								content: json.message,
+								skin: 'msg',
+								time: 2
+							});
+						} else {
+							window.location.href = 'wx/merchant/advertiser';
+						}
+					},
+					error: function() {
+						layer.open({
+							content: '服务器内部错误',
+							skin: 'msg',
+							time: 2
+						});
+					}
+				};
+				$(this).ajaxSubmit(opts);
+			}
+			return false;
+		});
+    });
+    </script> 
+    {/literal}
+    </body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/hhSwipe.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{$static_url}js/jweixin-1.2.0.js" type="text/javascript" charset="utf-8"></script>
+		<title>{$business.business_name}{if $business.branch_name}-{$business.branch_name}{/if}</title>
+	</head>
+	<body>
+		<div class="wrap">
+			<div class="banner">
+				<div>
+					{if $business.local_photo_list}
+                    <div class="scroll">
+                      <div class="scroll_box" id="scroll_img">
+                        <ul class="scroll_wrap">
+                          {foreach from=$business.local_photo_list item=photo}
+                          <li>
+                            <a><img src="{$photo}" style="width:100vw;height:53vw"></a>
+                          </li>
+                          {/foreach}
+                        </ul>
+                      </div>
+                      <ul class="scroll_position" id='scroll_position'>
+                        {section name=loop loop=$business.local_photo_list|@count}
+                        <li{if $smarty.section.loop.index eq 0} class="on"{/if}>
+                          <a href="javascript:void(0);">{$smarty.section.loop.index}</a>
+                        </li>
+                        {/section}
+                      </ul>
+                    </div>
+                    {else}
+                    <img src="{$static_url}images/product.png" style="width:100vw;height:53vw">
+                    {/if}
+				</div>
+			</div>
+			<dl class="product-miaoshu">
+				<dt>商家信息</dt>
+				<dd><div class="tit">{$business.business_name}{if $business.branch_name}-{$business.branch_name}{/if}</div>
+					<div class="con">{$business.city_name}{$business.district_name}{$business.address}</div>
+				</dd>
+			</dl>
+            {if $push_list}
+            {foreach from=$push_list item=push}
+			<div class="list-col biz">
+                <div>
+					<div class="wrap-img faj">
+						<img src="{if $push.thumb}{$push.thumb}{else}{$static_url}images/ticket_default.png{/if}">
+					</div>
+					<div id="">
+						<p class="col-orange">{if $push.class_id eq 2 or $push.class_id eq 3}<i>{$push.worth_value|string_format:'%.1f'}</i>折{else}&yen;<i>{$push.worth_value|string_format:'%d'}</i>{/if}</p>
+						<p class="col-grey"><i class="integral">豆</i>
+							每100元赠送20乐豆
+						</p>
+						<p class="col-grey">剩余{$push.before_num}张&nbsp;&nbsp;&nbsp;已领{$push.receive_total}张</p>
+					</div>
+					<a class="btn" href="wx/coupon/detail?id={$push.id}">查看详情</a>
+				</div>
+			</div>
+            {/foreach}
+            {/if}
+			<dl class="list-nav biz">
+				<a href="wx/local/comment?id={$id}">
+					商家评价<div class="arrive"></div><span class="col-grey">查看更多</span>
+				</a>
+                {if $comment_list}
+                {foreach from=$comment_list item=comment}
+				<div class="item">
+					<div class="title fa">
+						<img src="{if $comment.portrait}{$comment.portrait}{else}{$static_url}images/portrait.jpg{/if}">
+						<div class="name">{if $comment.nickname}{$comment.nickname}{else}匿名{/if}</div>
+						<div class="f1"></div>
+						<div class="col-grey">{$comment.create_time|date_format:'%Y-%m-%d'}</div>
+					</div>
+					<p>{$comment.content}</p>
+                    {if $comment.photo_list}
+					<div class="imgs">
+						{foreach from=$comment.photo_list item=photo}
+                        <div class="wrap-img">
+							<img data-preview-id="{$comment.id}" src="{$photo}">
+						</div>
+                        {/foreach}
+					</div>
+                    {/if}
+				</div>
+                {/foreach}
+                {/if}
+			</dl>
+            {if $product_total}
+			<dl class="dl-product">
+				<dt>商品展示</dt>
+				<dd>
+					<nav class="left">
+						{if $cat_list}
+                        {foreach from=$cat_list item=cat name=foo}
+                        <a data-cat-id="{$cat.id}" href="javascript:void(0);"{if $smarty.foreach.foo.index eq 0} class="active"{/if}>{$cat.cat_name}</a>
+                        {/foreach}
+                        {/if}
+					</nav>
+					<div class="con">
+						{if $cat_list}
+                        {foreach from=$cat_list item=cat}
+                        <div data-product-list="{$cat.id}" data-is-loaded="0" class="item"></div>
+                        {/foreach}
+                        {/if}
+					</div>
+				</dd>
+			</dl>
+            {/if}
+		</div>
+	<script type="text/javascript">
+	//全局变量
+	var product_total = parseInt('{$product_total}');
+	var _appId = '{$signPackage.appId}';
+	var _timestamp = '{$signPackage.timestamp}';
+	var _nonceStr = '{$signPackage.nonceStr}';
+	var _signature = '{$signPackage.signature}';
+	var static_url = '{$static_url}';
+	var product_total = parseInt('{$product_total}');
+	var img_current = '', img_urls = [], has_load = false;
+	</script> 
+	{literal} 
+	<script type="text/javascript">
+	//加载商品列表
+	function loadProduct(cat_id, obj) {
+		if (!has_load) {
+			has_load = true;
+			$.ajax({
+				async: true,
+				type: 'POST',
+				url: 'wx/product/loadproductlist',
+				data: {
+					'cat_id': cat_id,
+					'goods_type': 0
+				},
+				dataType: 'JSON',
+				beforeSend: function() {
+					obj.html('<div class="no-data">loading……</div>');
+				},
+				success: function(json) {
+					has_load = false;
+					if (json.code > 0) {
+						obj.html('<div class="no-data">' + json.message + '</div>');
+					} else {
+						if (obj.find('.no-data').length > 0) {
+							obj.find('.no-data').remove();
+						}
+						obj.append(json.content);
+					}
+				},
+				error: function() {
+					has_load = false;
+					obj.html('<div class="no-data">服务器内部错误</div>');
+				}
+			});
+		}
+	}
+	$(document).ready(function() {
+		$('[data-preview-id]').unbind('click').on('click', function() {
+			var id = $(this).attr('data-preview-id');
+			img_current = 'http://' + document.domain + '/' + $(this).attr('src');
+			img_urls = [];
+			$('[data-preview-id="' + id + '"]').each(function() {
+				img_urls.push('http://' + document.domain + '/' + $(this).attr('src'));
+			});
+			wx.previewImage({
+				current: img_current,
+				urls: img_urls
+			});
+		});
+		if (!isNaN(product_total) && product_total > 0) {
+			$('[data-cat-id]').unbind('click').on('click', function() {
+				var cat_id = $(this).attr('data-cat-id');
+				var obj = $('[data-product-list="' + cat_id + '"]');
+				var is_loaded = parseInt(obj.attr('data-is-loaded'));
+				is_loaded = (isNaN(is_loaded) || is_loaded <= 0) ? 0 : 1;
+				$('[data-cat-id]').removeClass('active');
+				$(this).addClass('active');
+				$('[data-product-list]').hide();
+				obj.show();
+				if (is_loaded == 0) {
+					obj.html('');
+					loadProduct(cat_id, obj);
+				}
+			});
+			$('[data-cat-id]:first-child').trigger('click');
+		}
+	});
+	</script> 
+	{/literal}
+    </body>
+</html>

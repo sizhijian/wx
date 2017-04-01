@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/hhSwipe.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{$static_url}js/jweixin-1.0.0.js" type="text/javascript"></script>
+		<title>商家</title>
+	</head>
+	<body>
+		<div class="wrap">
+			<div class="info-merchants" hidden>
+				<nav>
+					<a class="active" href="javascript:;">今日累计</a>
+					<a href="javascript:;">本周累计</a>
+					<a href="javascript:;">本月累计</a>
+				</nav>
+				<div>
+					<div class="left">
+						<p>营收(元)</p>
+						<p class="value">0.00</p>
+					</div>
+					<div class="center"></div>
+					<div class="right">
+						<p>会员(人)</p>
+						<p class="value">0</p>
+					</div>
+				</div>
+				<div>
+					<div class="left">
+						<p>营收(元)</p>
+						<p class="value">1.00</p>
+					</div>
+					<div class="center"></div>
+					<div class="right">
+						<p>会员(人)</p>
+						<p class="value">1</p>
+					</div>
+				</div>
+				<div>
+					<div class="left">
+						<p>营收(元)</p>
+						<p class="value">2.00</p>
+					</div>
+					<div class="center"></div>
+					<div class="right">
+						<p>会员(人)</p>
+						<p class="value">2</p>
+					</div>
+				</div>
+			</div>
+			<nav class="nav-share cashier">
+				<a id="scan_user" class="saoma" href="javascript:void(0)"><span>扫会员码</span></a>
+				<a class="sousuohuiyuan" href="wx/merchant/couponorder"><span>搜索会员</span></a>
+				<a id="scan_coupon" class="samayanquan" href="javascript:void(0)"><span>扫码验券</span></a>
+				<a class="shumayanquan" href="wx/merchant/entercode"><span>输码验券</span></a>
+			</nav>
+			<div class="list-nav">
+				<!--<a href="wx/merchant/businessinfo">{$business_name}<span class="msg" onclick="window.location.href=''"><em>9</em></span></a>-->
+				<p>
+					<span class="fl" onclick="window.location.href='wx/merchant/businessinfo'">{$business_name}</span>
+					<span class="msg" onclick="window.location.href='wx/merchant/message'"><em>{$sys_message_total}</em></span>
+				</p>
+				
+			</div>
+			<div class="list-col3">				
+				<!--<a href="merchants-vip-list.html">
+					<div class="wrap-img icon-2"></div>
+					<span>一键发券</span>
+				</a>-->
+				<a href="wx/merchant/facesendcoupon">
+					<div class="wrap-img icon-2"></div>
+					<span>面对面发券</span>
+				</a>
+				<a href="wx/merchant/advertiser">
+					<div class="wrap-img icon-4"></div>
+					<span>广告主</span>
+				</a>
+				<a href="wx/merchant/flowmaster">
+					<div class="wrap-img icon-5"></div>
+					<span>流量主</span>
+				</a>				
+				<a href="wx/merchant/coupon">
+					<div class="wrap-img icon-3"></div>
+					<span>优惠券</span>
+				</a>
+				<a href="wx/merchant/marketing">
+					<div class="wrap-img icon-6"></div>
+					<span>营销</span>
+				</a>
+				<a href="wx/merchant/userlist">
+					<div class="wrap-img icon-7"></div>
+					<span>会员</span>
+				</a>
+				<a href="wx/merchant/order">
+					<div class="wrap-img icon-8"></div>
+					<span>订单管理</span>
+				</a>
+				<!--<a href="wx/merchant/goods">
+					<div class="wrap-img icon-9"></div>
+					<span>产品管理</span>
+				</a>-->
+				<a href="wx/merchant/accountbook">
+					<div class="wrap-img icon-10"></div>
+					<span>账本</span>
+				</a>
+				<a class="more">
+					<i>更多功能<br />敬请期待</i>
+				</a>
+				<!--<a class="more">
+					<i>&nbsp;</i>
+				</a>-->
+			</div>
+			<div class="exit-box">
+			<a class="exit" href="wx/merchant/logout">安全退出</a>
+            </div>
+		</div>
+	<script type="text/javascript">
+    //全局变量
+    var static_url = '{$static_url}';
+    var _appId = '{$signPackage.appId}';
+    var _timestamp = '{$signPackage.timestamp}';
+    var _nonceStr = '{$signPackage.nonceStr}';
+    var _signature = '{$signPackage.signature}';
+    </script> 
+    {literal} 
+    <script type="text/javascript">
+    wx.config({
+        debug: false,
+        appId: _appId,
+        timestamp: _timestamp,
+        nonceStr: _nonceStr,
+        signature: _signature,
+        jsApiList: [
+            'scanQRCode'
+        ]
+    });
+    
+    wx.ready(function() {
+        document.querySelector('#scan_user').onclick = function () {
+            wx.scanQRCode({
+				needResult: 1,
+				desc: 'scanQRCode desc',
+				success: function (res) {
+					window.location.href= 'wx/merchant/couponorder?userno=' + res.resultStr;
+				}
+			});
+        };
+		document.querySelector('#scan_coupon').onclick = function () {
+            wx.scanQRCode({
+				needResult: 1,
+				desc: 'scanQRCode desc',
+				success: function (res) {
+					window.location.href= 'wx/merchant/couponorder?cardno=' + res.resultStr;
+				}
+			});
+        };
+    });
+    $(document).ready(function() {
+        
+    });
+    </script> 
+    {/literal}
+    </body>
+</html>

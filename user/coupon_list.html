@@ -1,0 +1,15 @@
+{foreach from=$list item=coupon}
+{if $coupon.class_id eq 2 or $coupon.class_id eq 3}
+<li class="zhekou">
+{else}
+<li class="daijinquan">
+{/if}
+  <div class="left">
+    <p>{$coupon.worth}</p>
+  </div>
+  <div class="center">
+    <p>{$coupon.title}</p>
+    <p class="col-grey">使用时间：{$coupon.begin_date|date_format:'%Y.%m.%d'}-{$coupon.end_date|date_format:'%Y.%m.%d'}</p>
+  </div>
+</li>
+{/foreach}

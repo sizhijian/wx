@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/hhSwipe.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+		<title>个人设置</title>
+	</head>
+	<body>
+		<div class="wrap">
+			{if $user.mobile eq ''}
+            <div class="info-normal">
+				为了您的账户安全，建议您绑定手机号。
+			</div>
+            {/if}
+			<div class="list-nav">
+				<a class="wrap-img" style="padding-bottom:1rem">
+					<div class="wrap-img">
+						<img src="{if $user.portrait}{$user.portrait}{else}{$static_url}images/temp-2.png{/if}">
+					</div>
+				</a>
+				<a href="javascript:void(0)">
+					昵称<span>{if $user.nickname}{$user.nickname}{else}匿名{/if}&nbsp;</span>
+				</a>
+				<a href="wx/user/mobile">
+					绑定手机号<div class="arrive"></div><span>{if $user.mobile}{$user.mobile}{else}未绑定{/if}</span>
+				</a>
+			</div>
+			<div class="list-nav address">
+				<!--<a href="personal_address_index.html">
+					收货地址(首次)<div class="arrive"></div>
+				</a>-->
+				<a href="wx/user/address">
+					收货地址<div class="arrive"></div>
+				</a>
+			</div>
+			<!--<div class="comm-btn">
+				<a href="">提交</a>
+			</div>-->
+		</div>
+	</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/hhSwipe.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+		<title>{$info.title}</title>
+	</head>
+	<body>
+		<div class="wrap">
+			<div class="list-llz">				
+				<div class="item">
+					<div class="info">
+						<div class="wrap-img">
+							<img src="{if $info.thumb}{$info.thumb}{else}{$static_url}images/ticket_default.png{/if}">
+						</div>
+						<div class="center">
+							<p>{$info.coupon_name}</p>
+							<p class="col-grey">{$info.business_name}{$info.branch_name}</p>
+                            <p class="col-grey">{if $info.class_id eq 2 or $info.class_id eq 3}{$info.worth_value|string_format:'%.1f'}折{else}&yen;{$info.worth_value}{/if}</p>
+						</div>
+						<div class="right active">
+							<a href="javascript:;">我要推广</a>
+						</div>
+					</div>
+					<p class="down">每核销一次获得<span class="col-red">{$info.commission_rate * $base_rate}%</span>佣金，保底{$info.lowest_amount * $base_rate}元佣金</p>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

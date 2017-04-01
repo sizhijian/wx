@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/hhSwipe.js" type="text/javascript" charset="utf-8"></script>
+		<title>优惠券</title>
+	</head>
+	<body>
+		<div class="wrap">
+			<div class="bar-top">
+				<a href="wx/merchant/addcoupon">创建优惠券</a>
+				<a href="wx/merchant/selectcoupon">自家推送券</a>
+			</div>
+			<nav class="nav-tab">
+				<a data-is-expired="0" class="active" href="javascript:;">进行中（{$ing_total}）</a>
+				<a data-is-expired="1" href="javascript:;">已结束（{$expired_total}）</a>
+			</nav>
+			<div class="con-tab advertisers">
+				<div class="list-ticket merchants"></div>
+			</div>
+			
+		</div>
+	<script type="text/javascript">
+	//全局变量
+	var static_url = '{$static_url}';
+	var is_expired = 0, page = 1, allow = true, has_load = false;
+	</script> 
+	{literal} 
+	<script type="text/javascript">
+	//加载列表
+	function loadCoupon() {
+		if (allow && !has_load) {
+			has_load = true;
+			$.ajax({
+				async: true,
+				type: 'POST',
+				url: 'wx/merchant/loadcoupon',
+				data: {
+					'is_expired': is_expired,
+					'page': page
+				},
+				dataType: 'JSON',
+				beforeSend: function() {},
+				success: function(json) {
+					has_load = false;
+					if (json.code > 0) {
+						if (page == 1 && json.code == 3) {
+							$('.list-ticket').html('<li><div class="no-data">暂无相关数据</div></li>');
+						}
+						allow = false;
+					} else {
+						$('.list-ticket').append(json.content);
+						page++;
+					}
+				},
+				error: function() {
+					has_load = false;
+					$('.list-ticket').html('<li><div class="no-data">服务器内部错误</div></li>');
+				}
+			});
+		}
+	}
+	window.addEventListener('load', function () {
+		FastClick.attach(document.body);
+	}, false);
+	$(document).on('scroll', function() {
+		var a = $(document).scrollTop();
+		var b = $(document).height() - $(window).height();
+		if (a >= b) {
+			loadCoupon();
+		}
+	});
+	$(document).ready(function() {
+		loadCoupon();
+		$('[data-is-expired]').unbind('click').on('click', function() {
+			is_expired = parseInt($(this).attr('data-is-expired'));
+			page = 1;
+			allow = true;
+			has_load = false;
+			$('[data-is-expired]').removeClass('active');
+			$(this).addClass('active');
+			$('.list-ticket').html('');
+			loadCoupon();
+		});
+	});
+	</script> 
+	{/literal}
+    </body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/hhSwipe.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+		<title>{$goods.goods_name}</title>
+	</head>
+
+	<body>
+		<div class="wrap">			
+			<div class="banner">
+				<div>
+					<img src="{if $goods.goods_thumb}{$goods.goods_thumb}{else}{$static_url}images/product.png{/if}" />
+				</div>
+			</div>
+			<div class="buy-box">
+				<div class="left">
+					<p class="name"><span class="col-normal">{$goods.goods_name}</span></p>
+					<p class="name"><span>{$goods.exchange_price}元+{$goods.integral_num}乐豆</span></p>
+					<p class="txt-through col-grey">原价 {$goods.goods_price}元</p>
+				</div>
+				<div class="right"><br />
+					<a href="wx/mall/order?id={$goods.id}">立即兑换</a>
+				</div>
+			</div>
+			<dl class="product-miaoshu">
+				<dt>商品描述</dt>
+				<dd>{$goods.goods_desc}</dd>
+			</dl>
+			<dl class="product-miaoshu">
+				<dt>购买须知</dt>
+				<dd>
+					<div class="item">1.有效期</div>
+					<div class="item">1.有效期</div>
+					<div class="item">1.有效期</div>
+				</dd>
+			</dl>
+		</div>
+	</body>
+
+</html>

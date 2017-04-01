@@ -1,0 +1,18 @@
+{foreach from=$list item=comment}
+<div class="item">
+  <div class="title fa">
+    <img src="{if $comment.portrait}{$comment.portrait}{else}{$static_url}images/portrait.jpg{/if}">
+    <div class="name">{if $comment.nickname}{$comment.nickname}{else}匿名{/if}</div>
+    <div class="f1"></div>
+    <div class="col-grey">{$comment.create_time|date_format:'%Y-%m-%d'}</div>
+  </div>
+  <p>{$comment.content}</p>
+  {if $comment.photo_list}
+  <div class="imgs">
+    {foreach from=$comment.photo_list item=photo}
+    <div class="wrap-img"><img data-preview-id="{$comment.id}" src="{$photo}"></div>
+    {/foreach}
+  </div>
+  {/if}
+</div>
+{/foreach}

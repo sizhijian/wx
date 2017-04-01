@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/mobiscroll.custom-3.0.0-beta6.min.css"/>
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+        <script src="{$static_url}js/jquery.form.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/mobiscroll.custom-3.0.0-beta6.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{$static_url}js/layer_mobile/layer.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{$static_url}js/jweixin-1.2.0.js" type="text/javascript" charset="utf-8"></script>
+		<title>创建优惠券</title>
+	</head>
+	<body>
+		<div class="wrap" style="padding-top: 3.142rem;">
+			<div class="yulan" id="yulan_box" hidden>
+				<div class="allScreen"></div>
+				<ul class="list-ticket">
+					<li class="guibinquan">
+						<div class="left">
+							<p>8.8折</p>
+						</div>
+						<div class="center">
+							<p>汉庭连锁贵宾券</p>
+							<p class="col-grey">使用时间：2015.7.11-2015.7.21</p>
+						</div>
+					</li>
+					<li class="daijinquan normal">
+						<div class="left">
+							<p>￥200</p>
+						</div>
+						<div class="center">
+							<p>汉庭连锁代金券</p>
+							<p class="col-grey">满100元可用，每100元赠送<span class="col-orange">40</span>乐豆</p>
+							<p class="col-grey">使用时间：2015.7.11-2015.7.21</p>
+						</div>
+						<div class="line" style="font-size: .9rem;">
+							推广券&nbsp;&nbsp;10乐豆=1元
+						</div>
+					</li>
+					<li class="daijinquan tui">
+						<div class="left">
+							<p>￥200</p>
+						</div>
+						<div class="center">
+							<p>汉庭连锁代金券</p>
+							<p class="col-grey">每100元赠送<span class="col-orange">40</span>乐豆</p>
+							<p class="col-grey">使用时间：2015.7.11-2015.7.21</p>
+						</div>
+						<div class="line">
+							注：10乐豆=1元
+						</div>
+					</li>
+					<li class="zhekou normal">
+						<div class="left">
+							<p>8.8折</p>
+						</div>
+						<div class="center">
+							<p>汉庭连锁折扣券</p>
+							<p class="col-grey">满100元可用，每100元赠送<span class="col-orange">40</span>乐豆</p>
+							<p class="col-grey">使用时间：2015.7.11-2015.7.21</p>
+						</div>
+					</li>
+					<li class="zhekou tui">
+						<div class="left">
+							<p>8.8折</p>
+						</div>
+						<div class="center">
+							<p>汉庭连锁折扣券</p>
+							<p class="col-grey">使用时间：2015.7.11-2015.7.21</p>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<nav class="nav-tab p-fixed" style="top: 0;">
+				<a class="active" href="javascript:;">代金券</a>
+				<a href="javascript:;">折扣券</a>
+				<!--<a href="javascript:;">贵宾券</a>-->
+			</nav>
+			<div class="info-title bgcol-blue">每月最多创建10张优惠券</div>
+			<div class="con-tab">
+				<form id="dj_form" name="dj_form" class="form-normal" action="" method="post">
+					<p class="title">代金券名称</p>
+					<input type="text" name="title" maxlength="18" value="" placeholder="请输入代金券名称（例 : 门店名+金额+代金券）">
+					<p class="title">代金券金额</p>
+					<input type="number" name="worth_value" maxlength="3" value="" placeholder="请输入代金券金额">
+					<p class="title">使用条件</p>
+					<div class="push">
+						<span>消费满</span>
+						<input type="number" name="brim_amount" id="" maxlength="5" value="" placeholder="请输入"/>
+						<span>元可使用此券</span>
+					</div>
+					<p class="title">使用须知</p>
+					<textarea name="description" rows="3" cols="" placeholder="请输入使用须知"></textarea>
+					<p class="title">库存数量（最多9999张）</p>
+					<div class="end_font">
+						<input type="tel" name="total_num" maxlength="4" value="" placeholder="请设置代金券库存数量">
+						<span>张</span>
+					</div>
+					<p class="title">有效期</p>
+					<ul class="select">
+						<li>
+							<input type="radio" name="select_time" value="0" checked="checked">
+							<i class="radio"></i>
+							<span class="name">发券后 </span>
+							<input type="tel" maxlength="2" class="underline width25 txt-center col-normal" name="fixed_term" value="" placeholder="请输入天数"/>
+							<span class="name">天内有效 </span>
+							
+						</li>
+						<li>
+							<input type="radio" name="select_time" value="1">
+							<i class="radio"></i>
+							<input type="text" class="underline width25 col-normal" name="become_time" id="date_start" value="" placeholder="开始时间"/>
+							<span class="name">至</span>
+							<input type="text" class="underline width25 col-normal" name="invalid_time" id="date_end" value="" placeholder="结束时间"/>
+						</li>
+					</ul>
+					<p class="title">每人领取上限（最多99张）</p>
+					<div class="end_font">
+						<input type="tel" name="limited_num" maxlength="2" value="" placeholder="请输入代金券领取上限">
+						<span>张</span>
+					</div>
+                    <p class="title">单次消费最多使用张数</p>
+					<div class="end_font">
+						<input type="tel" name="use_limited_num" maxlength="4" value="" placeholder="请输入单次消费最多使用张数">
+						<span>张</span>
+					</div>
+                    <p class="title">上传图片</p>
+                    <a rel="upload-thumb" href="javascript:void(0)" style="display:block;padding:10px;border:1px solid #d0d0d0;background-color:#fff">请上传不大于1M的图片</a>
+					<div class="bar-down special">
+						<a id="daijin_yulan" class="cancel" href="javascript:;">预览</a>
+						<input type="hidden" name="class_id" value="4">
+                        <input type="hidden" name="timing_type" value="0">
+                        <input class="submit" type="submit" name="" id="" value="提交">
+					</div>
+				</form>
+				
+				<form id="zk_form" name="zk_form" class="form-normal" action="" method="post">
+					<p class="title">折扣券名称</p>
+					<input type="text" name="title" maxlength="18" value="" placeholder="请输入折扣券名称（例 : 门店名+金额+折扣券）">
+					<p class="title">折扣</p>
+					<div class="zhekou">
+						<input class="zhekou" type="number" name="worth_value" maxlength="3" value="" placeholder="请输入折扣数字，如8.8">
+					</div>
+					<p class="title">库存数量（最多9999张）</p>
+					<div class="end_font">
+						<input type="tel" name="total_num" maxlength="4" value="" placeholder="请设置折扣券库存数量">
+						<span>张</span>
+					</div>
+					<p class="title">使用须知</p>
+					<textarea name="description" rows="3" cols="" placeholder="请输入使用须知">折扣券不可叠加使用</textarea>
+					<p class="title">有效期</p>
+					<ul class="select">
+						<li>
+							<input type="radio" name="select_time1" id="" value="0" checked="checked">
+							<i class="radio"></i>
+							<span class="name">发券后 </span>
+							<input type="tel" maxlength="2" class="underline width25 txt-center" name="fixed_term" value="" placeholder="请输入天数"/>
+							<span class="name">天内有效 </span>
+							
+						</li>
+						<li>
+							<input type="radio" name="select_time1" id="" value="1">
+							<i class="radio"></i>
+							<input type="text" class="underline width25" name="become_time" id="date_start1" value="" placeholder="开始时间"/>
+							<span class="name">至</span>
+							<input type="text" class="underline width25" name="invalid_time" id="date_end1" value="" placeholder="结束时间"/>
+						</li>
+					</ul>
+					<p class="title">每人领取上限（最多99张）</p>
+					<div class="end_font">
+						<input type="tel" name="limited_num" maxlength="2" value="" placeholder="请输入折扣券领取上限">
+						<span>张</span>
+					</div>
+                    <p class="title">上传图片</p>
+                    <a rel="upload-thumb" href="javascript:void(0)" style="display:block;padding:10px;border:1px solid #d0d0d0;background-color:#fff">请上传不大于1M的图片</a>
+					<div class="bar-down special">
+						<a id="zhekou_yulan" class="cancel" href="javascript:;">预览</a>
+						<input type="hidden" name="class_id" value="2">
+                        <input type="hidden" name="timing_type" value="0">
+                        <input class="submit" type="submit" name="" id="" value="提交">
+					</div>
+				</form>
+				
+				<form id="gb_form" name="gb_form" class="form-normal" action="" method="post" hidden>
+					<p class="title">优惠券名称</p>
+					<input type="text" name="title" maxlength="18" value="" placeholder="请输入优惠券名称">
+					<p class="title">折扣</p>
+					<div class="zhekou">
+						<input class="zhekou" type="number" name="worth_value" maxlength="3" value="" placeholder="请输入折扣数字，如8.8">
+					</div>
+					<p class="title">库存数量（最多9999张）</p>
+					<div class="end_font">
+						<input type="number" name="total_num" maxlength="4" value="" placeholder="请设置折扣券库存数量">
+						<span>张</span>
+					</div>
+					<p class="title">使用须知</p>
+					<textarea name="description" rows="3" cols="" placeholder="请输入使用须知"></textarea>
+					<p class="title">有效期</p>
+					<ul class="select">
+						<li>
+							<input type="radio" name="select_time" id="" value="0" checked="checked">
+							<i class="radio"></i>
+							<span class="name">发券后</span>
+							<input type="number" class="underline width25" maxlength="2" name="fixed_term" value="" placeholder="请输入天数"/>
+							<span class="name">天内有效 </span>
+							
+						</li>
+						<li>
+							<input type="radio" name="select_time" id="" value="1">
+							<i class="radio"></i>
+							<input type="text" class="underline width25" name="become_time" id="date_start2" value="" placeholder="开始时间"/>
+							<span class="name">至</span>
+							<input type="text" class="underline width25" name="invalid_time" id="date_end2" value="" placeholder="结束时间"/>
+						</li>
+					</ul>
+					<p class="title">每人领取上限（最多99张）</p>
+					<div class="end_font">
+						<input type="number" name="limited_num" maxlength="2" value="" placeholder="请输入优惠券领取上限">
+						<span>张</span>
+					</div>
+                    <p class="title">上传图片</p>
+                    <a rel="upload-thumb" href="javascript:void(0)" style="display:block;padding:10px;border:1px solid #d0d0d0;background-color:#fff">请上传不大于1M的图片</a>
+					<div class="bar-down special">
+						<a id="guibin_yulan" class="cancel" href="javascript:;">预览</a>
+						<input type="hidden" name="class_id" value="3">
+                        <input type="hidden" name="timing_type" value="0">
+                        <input class="submit" type="submit" name="" id="" value="提交">
+					</div>
+				</form>
+			</div>
+		</div>
+	<script type="text/javascript">
+    var _appId = '{$signPackage.appId}';
+	var _timestamp = '{$signPackage.timestamp}';
+	var _nonceStr = '{$signPackage.nonceStr}';
+	var _signature = '{$signPackage.signature}';
+	var localIds;
+    </script>
+    {literal} 
+	<script type="text/javascript">
+	wx.config({
+		debug: false,
+		appId: _appId,
+		timestamp: _timestamp,
+		nonceStr: _nonceStr,
+		signature: _signature,
+		jsApiList: [
+			'chooseImage'
+		]
+	});
+	$(document).ready(function() {
+		$('#date_start , #date_end , #date_start4 , #date_end4 , #date_start1 , #date_end1 , #date_start5 , #date_end5 , #date_start2 , #date_end2 , #date_start6 , #date_end6').mobiscroll().calendar({
+			theme: 'mobiscroll',
+			lang: 'zh',
+			display: 'bottom',
+			controls: ['calendar'],
+			dateFormat: 'yyyy-mm-dd'
+		});
+		//输入整数
+		$('input[type="tel"]').bind('input propertychange change', function() {
+			var val = $(this).val();
+			var maxlen = (typeof($(this).attr('maxlength')) == 'undefined') ? 1 : $(this).attr('maxlength');
+			if (isNaN(maxlen) || maxlen <= 0) {
+				maxlen = 1;
+			}
+			$(this).val(val.replace(/\D|^0/g, '').toString().substring(0, maxlen));
+		}).bind('paste', function() {
+			var val = $(this).val();
+			var maxlen = (typeof($(this).attr('maxlength')) == 'undefined') ? 1 : $(this).attr('maxlength');
+			if (isNaN(maxlen) || maxlen <= 0) {
+				maxlen = 1;
+			}
+			$(this).val($(this).val().replace(/[^0-9]/g, '').toString().substring(0, maxlen));
+		}).css('ime-mode', 'disabled');
+		//输入金额
+		$('input[type="number"]').bind('input propertychange change', function() {
+			var val = $(this).val();
+			var maxlen = (typeof($(this).attr('maxlength')) == 'undefined') ? 1 : $(this).attr('maxlength');
+			if (isNaN(maxlen) || maxlen <= 0) {
+				maxlen = 4;
+			}
+			$(this).val(val.replace('.', '$#$').replace(/\./g, '').replace('$#$', '.').toString().substring(0, maxlen));
+		}).bind('paste', function() {
+			var val = $(this).val();
+			var maxlen = (typeof($(this).attr('maxlength')) == 'undefined') ? 1 : $(this).attr('maxlength');
+			if (isNaN(maxlen) || maxlen <= 0) {
+				maxlen = 4;
+			}
+			$(this).val($(this).val().replace('.', '$#$').replace(/\./g, '').replace('$#$', '.').toString().substring(0, maxlen));
+		}).css('ime-mode', 'disabled');
+		//上传代金券图片
+		$('[rel="upload-thumb"]').unbind('click').on('click', function() {
+			var o = $(this);
+			wx.chooseImage({
+				count: 1,
+				success: function (res) {
+					localIds = res.localIds;
+					wx.getLocalImgData({
+						localId: localIds[0],
+						success: function (res) {
+							var localData = res.localData;
+							if (localData.indexOf('data:image') >= 0) {
+								localData = localData.replace('jgp', 'jpeg');
+							} else {
+								localData = 'data:image/jpeg;base64,' + localData;
+							}
+							o.html('<img src="' + localData + '">');
+						}
+					});
+				}
+			});
+		});
+		//代金券预览／／（代金券／满减）*100* （赠送比例 后台设定）*10 
+		$("#daijin_yulan").click(function(){
+			var title = $.trim($('#dj_form').find('input[name="title"]').val());
+			var worth_value = parseInt($('#dj_form').find('input[name="worth_value"]').val());//代金券金额
+//			var achieve_amount = parseInt($('#dj_form').find('input[name="achieve_amount"]').val());
+			var achieve_amount = parseInt($('#dj_form').find('input[name="brim_amount"]').val());//满减金额
+			var timing_type = parseInt($('#dj_form').find('input[name="select_time"]:checked').val());
+			var fixed_term = parseInt($('#dj_form').find('input[name="fixed_term"]').val());
+			var become_time = $.trim($('#dj_form').find('input[name="become_time"]').val());
+			var invalid_time = $.trim($('#dj_form').find('input[name="invalid_time"]').val());
+			title = title.length > 0 ? title : '优惠券名称';
+			worth_value = (!isNaN(worth_value) && worth_value > 0) ? worth_value : 100;
+//			achieve_amount = (!isNaN(achieve_amount) && achieve_amount > 0) ? achieve_amount : (worth_value * 3);
+			achieve_amount = (!isNaN(achieve_amount) && achieve_amount > 0) ? achieve_amount : (worth_value * 3);
+			var zengsongbili = 0.1;//赠送比例 后台设定
+			var bean_num = (worth_value/achieve_amount) * 100 * zengsongbili *10;
+			timing_type = (!isNaN(timing_type) && timing_type > 0) ? 1 : 0;
+			fixed_term = (!isNaN(fixed_term) && fixed_term > 0) ? fixed_term : 15;
+			become_time = become_time.length > 0 ? become_time : '2017-02-01';
+			invalid_time = invalid_time.length > 0 ? invalid_time : '2017-03-01';
+			$('#yulan_box li.daijinquan.normal .left p').html('￥' + worth_value);
+			$('#yulan_box li.daijinquan.normal .center p:nth-child(1)').html(title);
+			$('#yulan_box li.daijinquan.normal .center p:nth-child(2)').html('满' + achieve_amount + '元可用，每100元赠送<span class="col-orange">' + parseInt(bean_num) + '</span>乐豆');
+			if (!isNaN(timing_type) && timing_type == 1) {
+				$('#yulan_box li.daijinquan.normal .center p:nth-child(3)').html('使用时间：' + become_time + '-' + invalid_time);
+			} else {
+				$('#yulan_box li.daijinquan.normal .center p:nth-child(3)').html('使用时间：自领取后' + fixed_term + '天内');
+			}
+			$("#yulan_box").show();
+			$("#yulan_box li").hide();
+			$("#yulan_box li.daijinquan.normal").show();
+		});
+		//折扣券预览 (10-折数)*10* （赠送比例 后台设定）*10
+		$("#zhekou_yulan").click(function(){
+			var title = $.trim($('#zk_form').find('input[name="title"]').val());
+			var worth_value = parseFloat($('#zk_form').find('input[name="worth_value"]').val());
+			var timing_type = parseInt($('#zk_form').find('input[name="select_time1"]:checked').val());
+			var fixed_term = parseInt($('#zk_form').find('input[name="fixed_term"]').val());
+			var become_time = $.trim($('#zk_form').find('input[name="become_time"]').val());
+			var invalid_time = $.trim($('#zk_form').find('input[name="invalid_time"]').val());
+			title = title.length > 0 ? title : '优惠券名称';
+			worth_value = (!isNaN(worth_value) && worth_value > 0) ? worth_value : 10;
+			timing_type = (!isNaN(timing_type) && timing_type > 0) ? 1 : 0;
+			fixed_term = (!isNaN(fixed_term) && fixed_term > 0) ? fixed_term : 15;
+			become_time = become_time.length > 0 ? become_time : '2017-02-01';
+			invalid_time = invalid_time.length > 0 ? invalid_time : '2017-03-01';
+			$('#yulan_box li.zhekou.normal .left p').html(worth_value + '折');
+			$('#yulan_box li.zhekou.normal .center p:nth-child(1)').html(title);
+			var zengsongbili = 0.1;//赠送比例 后台设定
+			var bean_num = (10-worth_value) * 10 * zengsongbili *10;
+			$('#yulan_box li.zhekou.normal .center p:nth-child(2)').html('每100元赠送<span class="col-orange">' + parseInt(bean_num) + '</span>乐豆');
+			if (!isNaN(timing_type) && timing_type == 1) {
+				$('#yulan_box li.zhekou.normal .center p:nth-child(3)').html('使用时间：' + become_time + '-' + invalid_time);
+			} else {
+				$('#yulan_box li.zhekou.normal .center p:nth-child(3)').html('使用时间：自领取后' + fixed_term + '天内');
+			}
+			$("#yulan_box").show();
+			$("#yulan_box li").hide();
+			$("#yulan_box li.zhekou.normal").show();
+		});
+		//贵宾券预览
+		$("#guibin_yulan").click(function(){
+			var title = $.trim($('#gb_form').find('input[name="title"]').val());
+			var worth_value = parseInt($('#gb_form').find('input[name="worth_value"]').val()).toFixed(1);
+			var timing_type = parseInt($('#gb_form').find('input[name="select_time"]:checked').val());
+			var fixed_term = parseInt($('#gb_form').find('input[name="fixed_term"]').val());
+			var become_time = $.trim($('#gb_form').find('input[name="become_time"]').val());
+			var invalid_time = $.trim($('#gb_form').find('input[name="invalid_time"]').val());
+			title = title.length > 0 ? title : '优惠券名称';
+			worth_value = (!isNaN(worth_value) && worth_value > 0) ? worth_value : 100;
+			timing_type = (!isNaN(timing_type) && timing_type > 0) ? 1 : 0;
+			fixed_term = (!isNaN(fixed_term) && fixed_term > 0) ? fixed_term : 15;
+			become_time = become_time.length > 0 ? become_time : '2017-02-01';
+			invalid_time = invalid_time.length > 0 ? invalid_time : '2017-03-01';
+			$('#yulan_box li.guibinquan.normal .left p').html(worth_value + '折');
+			$('#yulan_box li.guibinquan.normal .center p:nth-child(1)').html(title);
+			if (!isNaN(timing_type) && timing_type == 1) {
+				$('#yulan_box li.guibinquan.normal .center p:nth-child(2)').html('使用时间：' + become_time + '-' + invalid_time);
+			} else {
+				$('#yulan_box li.guibinquan.normal .center p:nth-child(2)').html('使用时间：自领取后' + fixed_term + '天内');
+			}
+			$("#yulan_box").show();
+			$("#yulan_box li").hide();
+			$("#yulan_box li.guibinquan").show();
+		});
+		//添加代金券
+		$('#dj_form').on('submit', function() {
+			var title = $.trim($(this).find('input[name="title"]').val());
+			var worth_value = parseInt($(this).find('input[name="worth_value"]').val()).toFixed(2);
+			var total_num = parseInt($(this).find('input[name="total_num"]').val());
+			var limited_num = parseInt($(this).find('input[name="limited_num"]').val());
+			var timing_type = parseInt($(this).find('input[name="select_time"]:checked').val());
+			var fixed_term = parseInt($(this).find('input[name="fixed_term"]').val());
+			var become_time = $.trim($(this).find('input[name="become_time"]').val());
+			var invalid_time = $.trim($(this).find('input[name="invalid_time"]').val());
+			var description = $.trim($(this).find('textarea[name="description"]').val());
+			var thumb = '';
+			if ($(this).find('a[rel="upload-thumb"] img').length > 0) {
+				thumb = $(this).find('a[rel="upload-thumb"] img').attr('src');
+			}
+			if (title.length == 0) {
+				layer.open({
+					content: '请输入优惠券名称',
+					skin: 'msg',
+					time: 2
+				});
+				return false;
+			}
+			if (isNaN(worth_value) || worth_value <= 0) {
+				layer.open({
+					content: '请输入减免金额',
+					skin: 'msg',
+					time: 2
+				});
+				return false;
+			}
+			if (isNaN(total_num) || total_num <= 0 || total_num > 9999) {
+				layer.open({
+					content: '请输入发放数量',
+					skin: 'msg',
+					time: 2
+				});
+				return false;
+			}
+			if (description.length == 0) {
+				layer.open({
+					content: '请输入使用须知',
+					skin: 'msg',
+					time: 2
+				});
+				return false;
+			}
+			if (isNaN(limited_num) || limited_num < 1 || limited_num > 99) {
+				layer.open({
+					content: '请输入每人限领数量(1-100之间)',
+					skin: 'msg',
+					time: 2
+				});
+				return false;
+			}
+			if (!isNaN(timing_type) && timing_type == 1) {
+				$(this).find('input[name="timing_type"]').val(1);
+				if (become_time.length == 0) {
+					layer.open({
+						content: '请输入有效期开始时间',
+						skin: 'msg',
+						time: 2
+					});
+					return false;
+				}
+				if (invalid_time.length == 0) {
+					layer.open({
+						content: '请输入有效期结束时间',
+						skin: 'msg',
+						time: 2
+					});
+					return false;
+				}
+			} else {
+				$(this).find('input[name="timing_type"]').val(0);
+				if (isNaN(fixed_term) || fixed_term <= 0 || fixed_term > 90) {
+					layer.open({
+						content: '请设置自领取后多少天内有效',
+						skin: 'msg',
+						time: 2
+					});
+					return false;
+				}
+			}
+			var opts = {
+				async: true,
+				type: 'POST',
+				url: 'wx/merchant/addcoupon',
+				data: {
+					'thumb': thumb
+				},
+				dataType: 'JSON',
+				beforeSend: function() {},
+				success: function(json) {
+					if (json.code > 0) {
+						layer.open({
+							content: json.message,
+							skin: 'msg',
+							time: 2
+						});
+					} else {
+						window.location.href = 'wx/merchant/coupon';
+					}
+				},
+				error: function() {
+					layer.open({
+						content: '服务器内部错误',
+						skin: 'msg',
+						time: 2
+					});
+				}
+			};
+			$(this).ajaxSubmit(opts);
+			return false;
+		});
+		//添加折扣券
+		$('#zk_form').on('submit', function() {
+			var title = $.trim($(this).find('input[name="title"]').val());
+			var worth_value = parseFloat($(this).find('input[name="worth_value"]').val()).toFixed(1);
+			var total_num = parseInt($(this).find('input[name="total_num"]').val());
+			var description = $.trim($(this).find('textarea[name="description"]').val());
+			var limited_num = parseInt($(this).find('input[name="limited_num"]').val());
+			var timing_type = parseInt($(this).find('input[name="select_time1"]:checked').val());
+			var fixed_term = parseInt($(this).find('input[name="fixed_term"]').val());
+			var become_time = $.trim($(this).find('input[name="become_time"]').val());
+			var invalid_time = $.trim($(this).find('input[name="invalid_time"]').val());
+			var thumb = '';
+			if ($(this).find('a[rel="upload-thumb"] img').length > 0) {
+				thumb = $(this).find('a[rel="upload-thumb"] img').attr('src');
+			}
+			if (title.length == 0) {
+				layer.open({
+					content: '请输入优惠券名称',
+					skin: 'msg',
+					time: 2
+				});
+				return false;
+			}
+			if (isNaN(worth_value) || worth_value < 1 || worth_value >= 10) {
+				layer.open({
+					content: '请输入折扣额度(1-9.9之间的数字)',
+					skin: 'msg',
+					time: 2
+				});
+				return false;
+			}
+			if (isNaN(total_num) || total_num <= 0 || total_num > 9999) {
+				layer.open({
+					content: '请输入发放数量',
+					skin: 'msg',
+					time: 2
+				});
+				return false;
+			}
+			if (description.length == 0) {
+				layer.open({
+					content: '请输入使用须知',
+					skin: 'msg',
+					time: 2
+				});
+				return false;
+			}
+			if (isNaN(limited_num) || limited_num < 1 || limited_num > 99) {
+				layer.open({
+					content: '请输入每人限领数量(1-100之间)',
+					skin: 'msg',
+					time: 2
+				});
+				return false;
+			}
+			if (!isNaN(timing_type) && timing_type == 1) {
+				$(this).find('input[name="timing_type"]').val(1);
+				if (become_time.length == 0) {
+					layer.open({
+						content: '请输入有效期开始时间',
+						skin: 'msg',
+						time: 2
+					});
+					return false;
+				}
+				if (invalid_time.length == 0) {
+					layer.open({
+						content: '请输入有效期结束时间',
+						skin: 'msg',
+						time: 2
+					});
+					return false;
+				}
+			} else {
+				$(this).find('input[name="timing_type"]').val(0);
+				if (isNaN(fixed_term) || fixed_term <= 0 || fixed_term > 90) {
+					layer.open({
+						content: '请设置自领取后多少天内有效',
+						skin: 'msg',
+						time: 2
+					});
+					return false;
+				}
+			}
+			var opts = {
+				async: true,
+				type: 'POST',
+				url: 'wx/merchant/addcoupon',
+				data: {
+					'thumb': thumb
+				},
+				dataType: 'JSON',
+				beforeSend: function() {},
+				success: function(json) {
+					if (json.code > 0) {
+						layer.open({
+							content: json.message,
+							skin: 'msg',
+							time: 2
+						});
+					} else {
+						window.location.href = 'wx/merchant/coupon';
+					}
+				},
+				error: function() {
+					layer.open({
+						content: '服务器内部错误',
+						skin: 'msg',
+						time: 2
+					});
+				}
+			};
+			$(this).ajaxSubmit(opts);
+			return false;
+		});
+		//添加贵宾券
+		$('#gb_form').on('submit', function() {
+			var title = $.trim($(this).find('input[name="title"]').val());
+			var worth_value = parseFloat($(this).find('input[name="worth_value"]').val()).toFixed(1);
+			var total_num = parseInt($(this).find('input[name="total_num"]').val());
+			var description = $.trim($(this).find('textarea[name="description"]').val());
+			var limited_num = parseInt($(this).find('input[name="limited_num"]').val());
+			var timing_type = parseInt($(this).find('input[name="select_time"]:checked').val());
+			var fixed_term = parseInt($(this).find('input[name="fixed_term"]').val());
+			var become_time = $.trim($(this).find('input[name="become_time"]').val());
+			var invalid_time = $.trim($(this).find('input[name="invalid_time"]').val());
+			var thumb = '';
+			if ($(this).find('a[rel="upload-thumb"] img').length > 0) {
+				thumb = $(this).find('a[rel="upload-thumb"] img').attr('src');
+			}
+			if (title.length == 0) {
+				layer.open({
+					content: '请输入优惠券名称',
+					skin: 'msg',
+					time: 2
+				});
+				return false;
+			}
+			if (isNaN(worth_value) || worth_value < 1 || worth_value >= 10) {
+				layer.open({
+					content: '请输入折扣额度(1-9.9之间的数字)',
+					skin: 'msg',
+					time: 2
+				});
+				return false;
+			}
+			if (isNaN(total_num) || total_num <= 0 || total_num > 9999) {
+				layer.open({
+					content: '请输入发放数量',
+					skin: 'msg',
+					time: 2
+				});
+				return false;
+			}
+			if (description.length == 0) {
+				layer.open({
+					content: '请输入使用须知',
+					skin: 'msg',
+					time: 2
+				});
+				return false;
+			}
+			if (isNaN(limited_num) || limited_num < 1 || limited_num > 99) {
+				layer.open({
+					content: '请输入每人限领数量(1-100之间)',
+					skin: 'msg',
+					time: 2
+				});
+				return false;
+			}
+			if (!isNaN(timing_type) && timing_type == 1) {
+				$(this).find('input[name="timing_type"]').val(1);
+				if (become_time.length == 0) {
+					layer.open({
+						content: '请输入有效期开始时间',
+						skin: 'msg',
+						time: 2
+					});
+					return false;
+				}
+				if (invalid_time.length == 0) {
+					layer.open({
+						content: '请输入有效期结束时间',
+						skin: 'msg',
+						time: 2
+					});
+					return false;
+				}
+			} else {
+				$(this).find('input[name="timing_type"]').val(0);
+				if (isNaN(fixed_term) || fixed_term <= 0 || fixed_term > 90) {
+					layer.open({
+						content: '请设置自领取后多少天内有效',
+						skin: 'msg',
+						time: 2
+					});
+					return false;
+				}
+			}
+			var opts = {
+				async: true,
+				type: 'POST',
+				url: 'wx/merchant/addcoupon',
+				data: {
+					'thumb': thumb
+				},
+				dataType: 'JSON',
+				beforeSend: function() {},
+				success: function(json) {
+					if (json.code > 0) {
+						layer.open({
+							content: json.message,
+							skin: 'msg',
+							time: 2
+						});
+					} else {
+						window.location.href = 'wx/merchant/coupon';
+					}
+				},
+				error: function() {
+					layer.open({
+						content: '服务器内部错误',
+						skin: 'msg',
+						time: 2
+					});
+				}
+			};
+			$(this).ajaxSubmit(opts);
+			return false;
+		});
+	});
+	</script> 
+	{/literal}
+    </body>
+</html>

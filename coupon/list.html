@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/hhSwipe.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+		<title>更多优惠券</title>
+	</head>
+	<body>
+		<div class="wrap" style="padding-top: 3.142rem;">
+			<nav class="nav-tab biz" hidden>
+			</nav>
+			<div class="list-biz" style="top: 0;">
+				<nav>
+					<div class="type active">行业</div>
+					<div class="ticket">全部券种</div>
+				</nav>
+				<div class="con-tab-biz type-con" hidden>
+					<div class="">
+						<div class="allScreen"></div>
+						<nav name="type-biz">
+							{if $cat_list}
+                            {foreach from=$cat_list item=cat}
+                            <a href="javascript:void(0);">{$cat.cat_name}</a>
+                            {/foreach}
+                            {/if}
+						</nav>
+                        {if $cat_list}
+                        {foreach from=$cat_list item=cat}
+						<div class="content" hidden>
+							<div data-cat-id="{$cat.id}">全部<span>{$cat.total}</span></div>
+                            {if $cat.sub_list}
+                            {foreach from=$cat.sub_list item=sub_cat}
+                            <div data-cat-id="{$sub_cat.id}">{$sub_cat.cat_name}<span>{$sub_cat.total}</span></div>
+                            {/foreach}
+                            {/if}
+						</div>
+                        {/foreach}
+                        {/if}
+					</div>
+				</div>
+				<div class="con-tab-biz ticket-con" hidden>
+					<div class="allScreen"></div>
+					<a data-class-id="0" class="active"><i>全部券种</i><span>{$all_total}</span></a>
+					<a data-class-id="1"><i>折扣券</i><span>{$zk_total}</span></a>
+					<a data-class-id="2"><i>代金券</i><span>{$dj_total}</span></a>
+				</div>
+			</div>
+			<div class="list-col"></div>
+		</div>
+	<script type="text/javascript">
+	//全局变量
+	var static_url = '{$static_url}';
+	var cat_id = '{$catid}', class_id = 0, keyword = '{$keyword}', page = 1, allow = true, has_load = false;
+	</script> 
+	{literal} 
+	<script type="text/javascript">
+	//加载列表
+	function loadCoupon() {
+		if (allow && !has_load) {
+			has_load = true;
+			$.ajax({
+				async: true,
+				type: 'POST',
+				url: 'wx/coupon/loadcoupon',
+				data: {
+					'cat_id': cat_id,
+					'class_id': class_id,
+					'keyword': keyword,
+					'page': page
+				},
+				dataType: 'JSON',
+				beforeSend: function() {},
+				success: function(json) {
+					has_load = false;
+					if (json.code > 0) {
+						if (page == 1 && json.code == 3) {
+							$('.list-col').html('<div class="no-data">暂无相关数据</div>');
+						}
+						allow = false;
+					} else {
+						$('.list-col').append(json.content);
+						page++;
+					}
+				},
+				error: function() {
+					has_load = false;
+					$('.list-col').html('<div class="no-data">服务器内部错误</div>');
+				}
+			});
+		}
+	}
+	window.addEventListener('load', function () {
+		FastClick.attach(document.body);
+	}, false);
+	$(document).on('scroll', function() {
+		var a = $(document).scrollTop();
+		var b = $(document).height() - $(window).height();
+		if (a >= b) {
+			loadCoupon();
+		}
+	});
+	$(document).ready(function() {
+		loadCoupon();
+		$('[data-cat-id]').unbind('click').on('click', function() {
+			cat_id = $(this).attr('data-cat-id');
+			page = 1;
+			allow = true;
+			has_load = false;
+			$('.con-tab-biz').hide();
+			$('.list-col').html('');
+			loadCoupon();
+		});
+		$('[data-class-id]').unbind('click').on('click', function() {
+			class_id = $(this).attr('data-class-id');
+			page = 1;
+			allow = true;
+			has_load = false;
+			$('.con-tab-biz').hide();
+			$('.list-col').html('');
+			loadCoupon();
+		});
+	});
+	</script> 
+	{/literal}
+    </body>
+</html>

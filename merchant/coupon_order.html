@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+        <script src="{$static_url}js/jquery.form.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/layer_mobile/layer.js" type="text/javascript" charset="utf-8"></script>
+		<title>核销优惠券</title>
+	</head>
+	<body>
+		<div class="wrap" style="padding-bottom: 4.5rem;">
+			{if !$user}
+            <header class="normal enter" style="padding-bottom: 1.875rem;">
+				<form id="soform" name="soform" action="" method="post">
+                <input type="tel" autofocus="autofocus" maxlength="19" name="userno" id="userno" value="{$userno}" placeholder="请输入会员ID/手机号">
+                <button type="submit" class="comm-btn">确定</button>
+                </form>
+            </header>
+			{/if}
+            <!--异步动态内容主体 开始-->
+            <div id="async-frame">
+            {if $user}
+            <form id="theform" name="theform" action="" method="post">
+			<dl class="info-dl">
+				<dd class="clear-padding">
+					<div class="left">
+						<span class="icon">
+							<img src="{if $user.portrait}{$user.portrait}{else}{$static_url}images/portrait.jpg{/if}">
+						</span>{if $user.nickname}{$user.nickname}{else}匿名{/if}
+					</div>
+					<div class="right">
+						<p>会员ID：{$user.userno}</p>
+						<p>手机号：{$user.mobile}</p>
+					</div>
+				</dd>
+			</dl>
+            <div class="info-money cashier">
+				<p>
+					消费总金额
+				</p>
+				<div class="fa">
+					<p><span class="bgcol-trans">￥</span></p>
+					<span></span>
+					<input type="number" name="ori_total_amount" maxlength="6" value="" placeholder="请输入本次消费总金额">
+				</div>
+				<p>
+					不可折扣金额
+				</p>
+				<div class="fa">
+					<p><span class="bgcol-trans">￥</span></p>
+					<span></span>
+					<input type="number" name="not_discount" maxlength="6" value="" placeholder="请输入本次消费不可折扣金额">
+				</div>
+			</div>
+            <div class="info-money cashier clear-padding">
+				<p>
+					是否使用乐豆抵现
+				</p>
+				<div class="select">
+					<span class="value">
+						<input type="checkbox" name="use_integral" value="0">
+						<i class="radio"></i>
+					</span>
+					<input type="tel" name="integral_num" maxlength="10" value="" data-max-num="{$user.integral_total}" placeholder="共有{$user.integral_total}乐豆可使用">
+				</div>
+			</div>
+            <p><span class="clear-bd">实收金额：<i id="total_amount">0.00</i>&nbsp;元</span></p>
+			<div class="list-ticket merchants select" id="list_ticket_select">
+				<div class="title">请选择需要核销的优惠券</div>
+                {if $coupon_list}
+                {foreach from=$coupon_list item=coupon}
+                <div class="item">
+					<div data-coupon-id="{$coupon.id}" data-coupon-type="{if $coupon.class_id eq 2 or $coupon.class_id eq 3}0{else}1{/if}" data-worth-value="{$coupon.worth}" data-allow-superposition="{$coupon.allow_superposition}" class="value{if $cur_coupon and $cur_coupon.id eq $coupon.id} active{/if} {if $coupon.class_id eq 2 or $coupon.class_id eq 3}zhekouquan{else}daijinquan{/if}">
+						<i class="radio"></i>
+					</div>
+					<a href="wx/merchant/coupondetail?id={$coupon.settings_id}">
+						<div class="info {if $coupon.class_id eq 2 or $coupon.class_id eq 3}zhekouquan{else}daijinquan{/if}">
+						<div class="wrap-img">
+							<img src="{if $coupon.thumb}{$coupon.thumb}{else}{$static_url}images/ticket_default.png{/if}">
+						</div>
+						<span class="col-orange">{$coupon.worth}</span>
+						<span>{$coupon.title}</span>
+					</div>
+					<div class="down">
+						<span class="left col-grey">使用时间：{$coupon.begin_timestamp|date_format:'%Y.%m.%d'}-{$coupon.end_timestamp|date_format:'%Y.%m.%d'}</span>
+						<span class="right col-grey">查看详情</span>
+						<img src="{$static_url}images/arrive-right.png">
+					</div>
+					</a>
+				</div>
+                {/foreach}
+                {/if}
+			</div>
+			
+			<div class="bar-down">
+                <input type="hidden" name="user_id" id="user_id" value="{$user.id}">
+                <input type="hidden" name="coupon_id" id="coupon_id" value="">
+                <button type="submit" name="submit" class="comm-btn only">确认核销</button>
+			</div>
+            </form>
+            {else}
+            <div class="no-data">{if $userno}未能匹配会员信息{/if}</div>
+            {/if}
+            </div>
+            <!--动态内容主体 结束-->
+		</div>
+	<script type="text/javascript">
+    //全局变量
+    var integral_rate = '{$integral_rate}';
+    var worth_rate = '{$worth_rate}';
+	var coupon_id = '';
+    </script>
+    {literal}
+    <script type="text/javascript">
+	window.addEventListener('load', function () {
+		FastClick.attach(document.body);
+	}, false);
+	function autoCalculate() {
+		var use_integral = $('input[name="use_integral"]').is(':checked');
+		var ori_total_amount = parseFloat($('input[name="ori_total_amount"]').val());
+		var not_discount = parseFloat($('input[name="not_discount"]').val());
+		var integral_num = parseInt($('input[name="integral_num"]').val());
+		var max_integral_num = parseInt($('input[name="integral_num"]').attr('data-max-num'));
+		var cardinal_number = 0;
+		var discount_total = 0;
+		var total_amount = 0;
+		var coupon_type = 0;
+		var worth_value = 0;
+		var coupon_list = [];
+		if (isNaN(ori_total_amount)) {
+			ori_total_amount = 0;
+		}
+		if (isNaN(not_discount)) {
+			not_discount = 0;
+		}
+		if (isNaN(integral_num)) {
+			integral_num = 0;
+			$('input[name="integral_num"]').val('');
+		}
+		if (isNaN(max_integral_num)) {
+			integral_num = 0;
+			$('input[name="integral_num"]').val('');
+		}
+		if (integral_num > max_integral_num) {
+			integral_num = max_integral_num;
+			$('input[name="integral_num"]').val(max_integral_num);
+		}
+		if (use_integral) {
+			$('input[name="use_integral"]').val(1);
+		} else {
+			integral_num = 0;
+			$('input[name="use_integral"]').val(0);
+			$('input[name="integral_num"]').val('');
+		}
+		cardinal_number = parseFloat(ori_total_amount - not_discount).toFixed(2);
+		if (coupon_id.length > 0) {
+			coupon_list = coupon_id.split('|');
+			$.each(coupon_list, function(idx, couid) {
+				coupon_type = parseInt($('[data-coupon-id="' + couid + '"]').attr('data-coupon-type'));
+				coupon_type = (!isNaN(coupon_type) && coupon_type > 0) ? 1 : 0;
+				worth_value = parseFloat($('[data-coupon-id="' + couid + '"]').attr('data-worth-value'));
+				worth_value = (!isNaN(worth_value) && worth_value > 0) ? worth_value : 0;
+				if (coupon_type > 0) {
+					discount_total += worth_value;
+				} else {
+					discount_total += cardinal_number * ((10 - worth_value) / 10);
+				}
+			});
+		}
+		total_amount = parseFloat(ori_total_amount - discount_total - (integral_num * (worth_rate / integral_rate))).toFixed(2);
+		$('#total_amount').html(total_amount);
+	}
+    $(document).ready(function() {
+		//搜索会员
+		$('#soform').on('submit', function() {
+			var userno = $.trim($('input[name="userno"]').val());
+			if (userno.length <= 0) {
+				layer.open({
+					content: '请输入会员id',
+					skin: 'msg',
+					time: 2
+				});
+			} else {
+				window.location.href = 'wx/merchant/couponorder?userno=' + userno;
+			}
+			return false;
+		});
+		//
+		$("#list_ticket_select .item>.value").each(function() {
+			if ($(this).hasClass("active")) {
+				if (coupon_id.length > 0) {
+					coupon_id += '|';
+				}
+				coupon_id += $(this).attr("data-coupon-id");
+				$('input[name="coupon_id"]').val(coupon_id);
+			}
+		});
+		//
+		$('input[name="ori_total_amount"],input[name="not_discount"],input[name="integral_num"]').on('change input propertychange', function() {
+			autoCalculate();
+		});
+		$('input[name="use_integral"]').unbind('click').on('click', function() {
+			autoCalculate();
+		});
+		//选择优惠券核销
+		$("#list_ticket_select .item>.value.zhekouquan").unbind('click').on('click', function() {
+			coupon_id = '';
+			$("#list_ticket_select .item>.value").not($(this)).removeClass("active");
+			$(this).toggleClass("active");
+			$("#list_ticket_select .item>.value").each(function() {
+				if ($(this).hasClass("active")) {
+					if (coupon_id.length > 0) {
+						coupon_id += '|';
+					}
+					coupon_id += $(this).attr("data-coupon-id");
+				}
+			});
+			$('input[name="coupon_id"]').val(coupon_id);
+			autoCalculate();
+		});
+		$("#list_ticket_select .item>.value.daijinquan").unbind('click').on('click', function() {
+			coupon_id = '';
+			$(this).toggleClass("active");
+			$("#list_ticket_select .item>.value.zhekouquan").removeClass("active");
+			$("#list_ticket_select .item>.value").each(function() {
+				if ($(this).hasClass("active")) {
+					if (coupon_id.length > 0) {
+						coupon_id += '|';
+					}
+					coupon_id += $(this).attr("data-coupon-id");
+				}
+			});
+			$('input[name="coupon_id"]').val(coupon_id);
+			autoCalculate();
+		});
+		//提交核销
+		$('#theform').on('submit', function() {
+			var is_error = false;
+			var user_id = parseInt($('input[name="user_id"]').val());
+			var ori_total_amount = parseFloat($('input[name="ori_total_amount"]').val());
+			if (isNaN(user_id) || user_id <= 0) {
+				is_error = true;
+				layer.open({
+					content: '请指定会员',
+					skin: 'msg',
+					time: 2
+				});
+				return false;
+			}
+			if (isNaN(ori_total_amount) || ori_total_amount <= 0) {
+				is_error = true;
+				layer.open({
+					content: '请输入本次消费总金额',
+					skin: 'msg',
+					time: 2
+				});
+				return false;
+			}
+			if (coupon_id.length <= 0) {
+				is_error = true;
+				layer.open({
+					content: '请选择优惠券',
+					skin: 'msg',
+					time: 2
+				});
+				return false;
+			}
+			if (!is_error) {
+				var opts = {
+					async: true,
+					type: 'POST',
+					url: 'wx/merchant/couponorder',
+					data: {},
+					dataType: 'JSON',
+					beforeSend: function() {
+						layer.open({
+							content: 'loading……',
+							skin: 'msg',
+							time: 5
+						});
+					},
+					success: function(json) {
+						if (json.code > 0) {
+							layer.open({
+								content: json.message,
+								skin: 'msg',
+								time: 2
+							});
+						} else {
+							layer.open({
+								content: json.message,
+								skin: 'msg',
+								time: 3
+							});
+							setTimeout(function() {
+								window.location.href = 'wx/merchant/couponorderpayment?orderno=' + json.orderno;
+							}, 2000);
+						}
+					},
+					error: function() {
+						layer.open({
+							content: '服务器内部错误',
+							skin: 'msg',
+							time: 2
+						});
+					}
+				};
+				$(this).ajaxSubmit(opts);
+			}
+			return false;
+		});
+    });
+    </script> 
+    {/literal}
+    </body>
+</html>

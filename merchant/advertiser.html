@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/hhSwipe.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{$static_url}js/layer_mobile/layer.js" type="text/javascript" charset="utf-8"></script>
+		<title>广告主</title>
+	</head>
+	<body>
+		<div class="wrap">
+			{if $total_amount lte 0}
+            <div class="info-title bgcol-orange">营销账户余额小于零将不能进行广告发布和优惠券核销，请充值!</div>
+            {/if}
+			<header class="header-txt">
+				<span class="col-grey">营销帐户（元）</span>
+				<span class="num">{$total_amount}</span>
+				<a class="bgcol-orange fr" href="wx/merchant/deposit">充值</a>
+				<a class="col-orange fr" href="wx/merchant/deposittrade">明细</a>
+			</header>
+			<dl class="dl-count">
+				<dt class="col-grey">数据统计</dt>
+				<dd>
+					<div class="item">
+						<p class="col-grey">支付佣金（元）</p>
+						<p class="col-orange">{$outlay_total}</p>
+					</div>
+					<div class="item">
+						<p class="col-grey">累计销售（元）</p>
+						<p class="col-orange">{$sale_total}</p>
+					</div>
+					<div class="item">
+						<p class="col-grey">累计发放（张）</p>
+						<p class="col-orange">{$send_coupon_total}</p>
+					</div>
+					<div class="item">
+						<p class="col-grey">累计核销（张）</p>
+						<p class="col-orange">{$destroy_coupon_total}</p>
+					</div>
+				</dd>
+			</dl>
+			<div class="bar-top">
+                {if $total_amount lte 0}
+                <a href="javascript:deppositMsg()">商盟推广</a>
+				<a href="javascript:deppositMsg()">平台发放</a>
+                {else}
+                <a href="wx/merchant/addadvertiser">商盟推广</a>
+				<a href="wx/merchant/pushadvertiser">平台发放</a>
+                {/if}
+			</div>
+			<p class="normal-title col-grey">广告活动</p>
+			<nav class="nav-tab">
+				<a data-type-id="1" href="javascript:;" class="clear-m">未开始（{$wait_advertiser_total}）</a>
+				<a data-type-id="2" href="javascript:;" class="active">进行中（{$run_advertiser_total}）</a>
+				<a data-type-id="3" href="javascript:;">已停止（{$stop_advertiser_total}）</a>
+			</nav>
+			<div class="con-tab advertisers">				
+				<div class="list-ticket merchants"></div>
+			</div>
+		</div>
+	<script type="text/javascript">
+	//全局变量
+	var static_url = '{$static_url}';
+	var type = 2, page = 1, has_load = false;
+	</script> 
+	{literal} 
+	<script type="text/javascript">
+	//帐户充值提示
+	function deppositMsg() {
+		layer.open({
+			content: '营销账户余额小于零将不能进行广告发布和优惠券核销，请充值!',
+			skin: 'msg',
+			time: 2
+		});
+	}
+	//加载列表
+	function loadAdvertiserList() {
+		if (!has_load) {
+			has_load = true;
+			$.ajax({
+				async: true,
+				type: 'POST',
+				url: 'wx/merchant/loadadvertiserlist',
+				data: {
+					'type': type,
+					'page': page
+				},
+				dataType: 'JSON',
+				beforeSend: function() {},
+				success: function(json) {
+					has_load = false;
+					if (json.code > 0) {
+						if (page == 1) {
+							$('.list-ticket').html('<div class="no-data">' + json.message + '</div>');
+						}
+					} else {
+						$('.list-ticket').append(json.content);
+						page++;
+					}
+				},
+				error: function() {
+					has_load = false;
+					$('.list-ticket').html('<div class="no-data">服务器内部错误</div>');
+				}
+			});
+		}
+	}
+	window.addEventListener('load', function () {
+		FastClick.attach(document.body);
+	}, false);
+	$(document).on('scroll', function() {
+		var a = $(document).scrollTop();
+		var b = $(document).height() - $(window).height();
+		if (a >= b) {
+			loadAdvertiserList();
+		}
+	});
+	$(document).ready(function() {
+		loadAdvertiserList();
+		$('[data-type-id]').unbind('click').on('click', function() {
+			type = parseInt($(this).attr('data-type-id'));
+			page = 1;
+			has_load = false;
+			$('[data-type-id]').removeClass('active');
+			$(this).addClass('active');
+			$('.list-ticket').html('');
+			loadAdvertiserList();
+			return false;
+		});
+	});
+	</script> 
+	{/literal}
+    </body>
+</html>

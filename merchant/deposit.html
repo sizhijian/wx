@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+        <meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/hhSwipe.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{$static_url}js/layer_mobile/layer.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{$static_url}js/jweixin-1.0.0.js" type="text/javascript" charset="utf-8"></script>
+		<title>广告主充值</title>
+	</head>
+	<body>
+		<div class="wrap">
+			<div class="info-money">
+				<p>
+					<span class="col-grey">营销帐户（元）</span>
+					<span class="num">{$deposit_total}</span>	
+				</p>
+				<div class="fa">
+					<p>充值金额</p>
+					<span></span>
+					<input type="number" name="total_amount" maxlength="10" value="" placeholder="请输入充值金额">
+				</div>
+			</div>
+			<a rel="payment" class="comm-btn" href="javascript:;">微信支付</a>
+			<div class="txt-down txt-center">
+				<p class="col-grey">如充值未正常到账 </p>
+				<p class="col-grey">请联系客服：<a href="tel:010-57168899" class="col-blue">010-57168899</a></p>
+			</div>
+		</div>
+	<script type="text/javascript">
+	var total_amount = 0, has_load = false, data = null;
+	</script>
+    {literal}
+	<script type="text/javascript">
+	function jsApiCall() {
+		WeixinJSBridge.invoke('getBrandWCPayRequest', {
+			'appId': data.appId,
+			'timeStamp': data.timeStamp,
+			'nonceStr': data.nonceStr,
+			'package': data.package,
+			'signType': data.signType,
+			'paySign': data.paySign
+		}, function(res) {
+			switch (res.err_msg) {
+				case 'get_brand_wcpay_request:ok':
+					window.history.back();
+					break;
+				case 'get_brand_wcpay_request:cancel':
+					layer.open({
+						content: '已取消支付',
+						skin: 'msg',
+						time: 2
+					});
+					break;
+				case 'get_brand_wcpay_request:fail':
+					layer.open({
+						content: '支付失败',
+						skin: 'msg',
+						time: 2
+					});
+					break;
+				default:
+					break;
+			}
+		});
+	}
+	function callpay() {
+		if (typeof WeixinJSBridge == 'undefined') {
+			if (document.addEventListener) {
+				document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+			} else if (document.attachEvent) {
+				document.attachEvent('WeixinJSBridgeReady', jsApiCall); 
+				document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+			}
+		} else {
+			jsApiCall();
+		}
+	}
+	$(document).ready(function() {
+		$('[rel="payment"]').unbind('click').on('click', function() {
+			total_amount = parseInt($('input[name="total_amount"]').val());
+			total_amount = (!isNaN(total_amount) && total_amount) ? total_amount : 0;
+			if (total_amount && !has_load) {
+				has_load = true;
+				$.ajax({
+					async: true,
+					type: 'POST',
+					url: 'wx/merchant/buildpayment',
+					data: {
+						'total_amount': total_amount
+					},
+					dataType: 'JSON',
+					beforeSend: function() {},
+					success: function(json) {
+						has_load = false;
+						if (json.code > 0) {
+							layer.open({
+								content: json.message,
+								skin: 'msg',
+								time: 2
+							});
+						} else {
+							data = json.data;
+							callpay();
+						}
+					},
+					error: function() {
+						has_load = false;
+						layer.open({
+							content: '服务器内部错误',
+							skin: 'msg',
+							time: 2
+						});
+					}
+				});
+			}
+		});
+	});
+    </script>
+    {/literal}
+    </body>
+</html>

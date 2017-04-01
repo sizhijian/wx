@@ -1,0 +1,9 @@
+{foreach from=$list item=dat}
+<li>
+  <div class="name">
+    <p>{$dat.integral_desc}</p>
+    <p>{$dat.create_time|date_format:'%Y-%m-%d'}</p>
+  </div>
+  <div class="value"> {if $dat.integral_type}-{else}+{/if}{$dat.integral_num} </div>
+</li>
+{/foreach}

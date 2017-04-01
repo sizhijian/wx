@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<base href="{$base_url}">
+<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+<script src="{$static_url}js/jquery.min.js"></script>
+<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+<script src="{$static_url}js/hhSwipe.js" type="text/javascript" charset="utf-8"></script>
+<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+<script src="{$static_url}js/jweixin-1.2.0.js" type="text/javascript" charset="utf-8"></script>
+<title>消费记录</title>
+</head>
+<body>
+<div class="wrap"></div>
+</body>
+</html>
+<script type="text/javascript">
+//全局变量
+var _appId = '{$signPackage.appId}';
+var _timestamp = '{$signPackage.timestamp}';
+var _nonceStr = '{$signPackage.nonceStr}';
+var _signature = '{$signPackage.signature}';
+var static_url = '{$static_url}';
+var img_current = '', img_urls = [];
+var page = 1, allow = true, has_load = false;
+</script>
+{literal}
+<script type="text/javascript">
+wx.config({
+	debug: false,
+	appId: _appId,
+	timestamp: _timestamp,
+	nonceStr: _nonceStr,
+	signature: _signature,
+	jsApiList: [
+		'previewImage'
+	]
+});
+//加载列表
+function loadConsume() {
+	if (allow && !has_load) {
+		has_load = true;
+		$.ajax({
+			async: true,
+			type: 'POST',
+			url: 'wx/user/loadconsume',
+			data: {
+				'page': page
+			},
+			dataType: 'JSON',
+			beforeSend: function() {},
+			success: function(json) {
+				has_load = false;
+				if (json.code > 0) {
+					if (page == 1 && json.code == 3) {
+						$('.wrap').html('<div class="no-data">暂无相关数据</div>');
+					}
+                    allow = false;
+                } else {
+                    $('.wrap').append(json.content);
+                    $(".info-dl dd div.col-grey>p").click(function() {
+                        $(this).children("i").toggleClass("active");
+                        $(this).next("").toggle();
+                    });
+                    $('[data-preview-id]').unbind('click').on('click', function() {
+						var id = $(this).attr('data-preview-id');
+						img_current = 'http://' + document.domain + '/' + $(this).attr('src');
+						img_urls = [];
+						$('[data-preview-id="' + id + '"]').each(function() {
+							img_urls.push('http://' + document.domain + '/' + $(this).attr('src'));
+						});
+						wx.previewImage({
+							current: img_current,
+							urls: img_urls
+						});
+					});
+                    page++;
+                }
+            },
+            error: function() {
+                has_load = false;
+                $('.wrap').html('<div class="no-data">服务器内部错误</div>');
+            }
+        });
+    }
+}
+$(document).on('scroll', function() {
+    var a = $(document).scrollTop();
+    var b = $(document).height() - $(window).height();
+    if (a >= b) {
+        loadConsume();
+    }
+});
+$(document).ready(function() {
+    loadConsume();
+});
+</script>
+{/literal}

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/hhSwipe.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+		<title>支付</title>
+	</head>
+	<body>
+		<div class="wrap">
+			<div class="info-order">
+				<p>现金支付：<span class="col-orange">{$order.total_amount}元</span></p>
+				<p>乐豆支付：<span class="col-orange">{$order.integral_num}</span></p>
+			</div>
+			<ul class="items-box items-box-pay">
+				<li><span class="name"><i class="wrap-img-wechatpay"></i>微信支付</span>
+					<span class="value">
+						<input type="radio" name="type-pay" id="" value="" checked="checked"/>
+						<i class="radio"></i>
+					</span>
+				</li>
+				<!--<li><span class="name"><i class="wrap-img-alipay"></i>支付宝支付</span>
+					<span class="value">
+						<input type="radio" name="type-pay" id="" value="" />
+						<i class="radio"></i>
+					</span>
+				</li>-->
+			</ul>
+			<div class="comm-btn"><a rel="payment" href="javascript:void(0)">确认支付</a></div>
+		</div>
+		</div>
+	</body>
+</html>

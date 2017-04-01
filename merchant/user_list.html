@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/hhSwipe.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+		<title>会员</title>
+	</head>
+	<body>
+		<div class="wrap">
+			<form id="soform" name="soform" class="" action="" method="post">
+				<header class="normal p-fixed">
+					<input style="width: 59%;" id="search_vip" class="input-search" type="text" name="keyword" value="" placeholder="昵称/会员ID/手机号">
+					<input type="submit" name="" id="search_vip_btn" value="搜索" />
+					<a id="screen_vip_btn" href="javascript:;">筛选</a>
+				</header>
+			</form>
+            <form id="filter_form" name="filter_form" action="" method="post">
+				<ul class="ul-vip" id="screen_vip_box">
+					<div class="allScreen"></div>
+					<li>
+						累计消费金额
+						<input class="input-inline" type="text" name="min_amount" id="" value="" placeholder="0"/>
+						~
+						<input class="input-inline" type="text" name="max_amount" id="" value="" placeholder="不限"/>
+					</li>
+					<li>
+						累计消费次数
+						<input class="input-inline" type="text" name="min_frequency" id="" value="" placeholder="0"/>
+						~
+						<input class="input-inline" type="text" name="max_frequency" id="" value="" placeholder="不限"/>
+					</li>
+					<li>
+						<p>最后消费时间</p>
+						<a href="javascript:void(0);">
+							<input type="radio" name="time" id="" value="0" checked>
+							<span>不限</span>
+						</a>
+						<a href="javascript:void(0);">
+							<input type="radio" name="time" id="" value="1" />
+							<span>7天以内</span>
+						</a>
+						<a href="javascript:void(0);">
+							<input type="radio" name="time" id="" value="2" />
+							<span>30天以内</span>
+						</a>
+						<a href="javascript:void(0);">
+							<input type="radio" name="time" id="" value="3" />
+							<span>1年以内</span>
+						</a>
+						<a href="javascript:void(0);">
+							<input type="radio" name="time" id="" value="4" />
+							<span>从未消费</span>
+						</a>
+					</li>
+					<li>
+						<input class="comm-btn" type="submit" value="确认"/>
+					</li>
+				</ul>
+			</form>
+			<div class="list-vip"></div>
+		</div>
+	<script type="text/javascript">
+	//全局变量
+	var static_url = '{$static_url}';
+	var min_amount = 0, max_amount = 0, min_frequency = 0, max_frequency = 0, time = 0, keyword = '';
+	var page = 1, allow = true, has_load = false;
+	</script> 
+	{literal} 
+	<script type="text/javascript">
+	//加载列表
+	function loadUserList() {
+		if (allow && !has_load) {
+			has_load = true;
+			$.ajax({
+				async: true,
+				type: 'POST',
+				url: 'wx/merchant/loaduserlist',
+				data: {
+					'min_amount': min_amount,
+					'max_amount': max_amount,
+					'min_frequency': min_frequency,
+					'max_frequency': max_frequency,
+					'time': time,
+					'keyword': keyword,
+					'page': page
+				},
+				dataType: 'JSON',
+				beforeSend: function() {},
+				success: function(json) {
+					has_load = false;
+					if (json.code > 0) {
+						if (page == 1 && json.code == 3) {
+							$('.list-vip').html('<div class="no-data">暂无相关数据</div>');
+						}
+						allow = false;
+					} else {
+						$('.list-vip').append(json.content);
+						page++;
+					}
+				},
+				error: function() {
+					has_load = false;
+					$('.list-vip').html('<div class="no-data">服务器内部错误</div>');
+				}
+			});
+		}
+	}
+	$(document).on('scroll', function() {
+		var a = $(document).scrollTop();
+		var b = $(document).height() - $(window).height();
+		if (a >= b) {
+			loadUserList();
+		}
+	});
+	$(document).ready(function() {
+		loadUserList();
+		$('[rel="submit"]').unbind('click').on('click', function() {
+			$('#soform').submit();
+		});
+		$('#soform').on('submit', function() {
+			keyword = $.trim($('input[name="keyword"]').val());
+			page = 1;
+			allow = true;
+			has_load = false;
+			$('.list-vip').html('');
+			loadUserList();
+			return false;
+		});
+		$('#filter_form').on('submit', function() {
+			min_amount = $.trim($('input[name="min_amount"]').val());
+			max_amount = $.trim($('input[name="max_amount"]').val());
+			min_frequency = $.trim($('input[name="min_frequency"]').val());
+			max_frequency = $.trim($('input[name="max_frequency"]').val());
+			time = $.trim($('input[name="time"]:checked').val());
+			keyword = $.trim($('input[name="keyword"]').val());
+			page = 1;
+			allow = true;
+			has_load = false;
+			$('.list-vip').html('');
+			$('#screen_vip_box').hide();
+			loadUserList();
+			return false;
+		});
+	});
+	</script> 
+	{/literal}
+    </body>
+</html>

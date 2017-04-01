@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/hhSwipe.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+		<title>多乐购</title>
+	</head>
+	<body>
+		<div class="wrap">
+			<div class="scroll">
+				<div class="scroll_box" id="scroll_img">
+					<ul class="scroll_wrap">
+						{if $image_slider}
+                        {foreach from=$image_slider item=image}
+                        {if $image.link_url}
+                        <li><a href="{$image.link_url}"><img src="{$image.image_url}" width="100%"></a></li>
+                        {else}
+                        <li><img src="{$image.image_url}" width="100%"></li>
+                        {/if}
+                        {/foreach}
+                        {else}
+						<li><img src="{$static_url}images/guanggao.png" width="100%"></li>
+						{/if}
+					</ul>
+				</div>
+				<ul class="scroll_position" id='scroll_position'>
+					{if $image_slider}
+                    {foreach from=$image_slider item=image name=foo}
+                    <li{if $smarty.foreach.foo.index eq 0} class="on"{/if}>
+						<a href="javascript:void(0);">{$smarty.foreach.foo.index + 1}</a>
+					</li>
+					{/foreach}
+                    {/if}
+				</ul>
+			</div>
+			<ul class="list-col2 integral"></ul>
+		</div>
+	<script type="text/javascript">
+	//全局变量
+	var page = 1, allow = true, has_load = false;
+	</script> 
+	{literal} 
+	<script type="text/javascript">
+	//加载列表
+	function loadGoodsList() {
+		if (allow && !has_load) {
+			has_load = true;
+			$.ajax({
+				async: true,
+				type: 'POST',
+				url: 'wx/mall/loadgoodslist',
+				data: {
+					'page': page
+				},
+				dataType: 'JSON',
+				beforeSend: function() {},
+				success: function(json) {
+					has_load = false;
+					if (json.code > 0) {
+						if (page == 1 && json.code == 3) {
+							$('.list-col2').html('<div class="no-data">暂无商品</div>');
+						}
+						allow = false;
+					} else {
+						$('.list-col2').append(json.content);
+						page++;
+					}
+				},
+				error: function() {
+					has_load = false;
+					$('.list-col2').html('<div class="no-data">服务器内部错误</div>');
+				}
+			});
+		}
+	}
+	$(document).on('scroll', function() {
+		var a = $(document).scrollTop();
+		var b = $(document).height() - $(window).height();
+		if (a >= b) {
+			loadGoodsList();
+		}
+	});
+	$(document).ready(function() {
+		loadGoodsList();
+	});
+	</script> 
+	{/literal}
+    </body>
+</html>

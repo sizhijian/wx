@@ -1,0 +1,8 @@
+{foreach from=$list item=coupon}
+<a href="wx/merchant/coupondetail?id={$coupon.id}">
+<div class="info {if $coupon.class_id eq 2}zhekouquan{else}daijinquan{/if}">
+  <div class="wrap-img"> <img src="{if $coupon.thumb}{$coupon.thumb}{else}{$static_url}images/ticket_default.png{/if}"/> </div>
+  <span class="col-orange">{$coupon.worth}</span> <span>{$coupon.title} X{$coupon.total_num}</span> </div>
+<div class="down"> <span class="left col-grey">使用时间：{if $coupon.timing_type}{$coupon.become_time|date_format:'%Y.%m.%d'}-{$coupon.invalid_time|date_format:'%Y.%m.%d'}{else}自领取后{$coupon.fixed_term}天内{/if}</span> </div>
+</a>
+{/foreach}

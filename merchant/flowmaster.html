@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<title>流量主</title>
+	</head>
+	<body>
+		<div class="wrap">
+			<header class="header-txt">
+				<span class="col-grey">营销帐户（元）</span>
+				<span class="num">{$total_amount}</span>
+				<a class="bgcol-orange fr" href="wx/merchant/flowmastertransout">提现</a>
+				<a class="col-orange fr" href="wx/merchant/flowmastertrade">明细</a>
+			</header>
+			<dl class="dl-count">
+				<dt class="col-grey">数据统计</dt>
+				<dd>
+					<div class="item">
+						<p class="col-grey">本月收益（元）</p>
+						<p class="col-orange">{$month_income_total}</p>
+					</div>
+					<div class="item">
+						<p class="col-grey">累计收益（元）</p>
+						<p class="col-orange">{$income_total}</p>
+					</div>
+					<div class="item">
+						<p class="col-grey">累计发放（张）</p>
+						<p class="col-orange">{$send_coupon_total}</p>
+					</div>
+					<div class="item">
+						<p class="col-grey">累计核销（张）</p>
+						<p class="col-orange">{$used_coupon_total}</p>
+					</div>
+				</dd>
+			</dl>
+			<a class="comm-btn-top" href="wx/merchant/flowmasteradlist">新增推广</a>
+			<dl class="dl-list">
+				<dt class="col-grey">广告活动</dt>
+			</dl>
+		</div>
+	<script type="text/javascript">
+	//全局变量
+	var static_url = '{$static_url}';
+	var page = 1, allow = true, has_load = false;
+	</script> 
+	{literal} 
+	<script type="text/javascript">
+	//加载列表
+	function loadFlowMaster() {
+		if (allow && !has_load) {
+			has_load = true;
+			$.ajax({
+				async: true,
+				type: 'POST',
+				url: 'wx/merchant/loadflowmasterlist',
+				data: {
+					'page': page
+				},
+				dataType: 'JSON',
+				beforeSend: function() {},
+				success: function(json) {
+					has_load = false;
+					if (json.code > 0) {
+						if (page == 1 && json.code == 3) {
+							$('.dl-list').html('<dd><div class="no-data">暂无相关数据</div></dd>');
+						}
+						allow = false;
+					} else {
+						$('.dl-list').append(json.content);
+						page++;
+					}
+				},
+				error: function() {
+					has_load = false;
+					$('.dl-list').html('<dd><div class="no-data">服务器内部错误</div></dd>');
+				}
+			});
+		}
+	}
+	window.addEventListener('load', function () {
+		FastClick.attach(document.body);
+	}, false);
+	$(document).on('scroll', function() {
+		var a = $(document).scrollTop();
+		var b = $(document).height() - $(window).height();
+		if (a >= b) {
+			loadFlowMaster();
+		}
+	});
+	$(document).ready(function() {
+		loadFlowMaster();
+	});
+	</script> 
+	{/literal}
+    </body>
+</html>

@@ -1,0 +1,37 @@
+{foreach from=$list item=order}
+<dl class="info-dl">
+  <dt class="col-grey"><span class="wrap-img"><img src="{if $order.portrait}{$order.portrait}{else}{$static_url}images/portrait.jpg{/if}"></span> 会员ID:{$order.userno}</dt>
+  <dd>
+    <p>订单编号：{$order.order_no}</p>
+    <p>商家信息：{$order.business_name}{$order.branch_name}</p>
+    <p>消费金额：¥30.00 </p>
+    <div class="col-grey">
+      <p> <i class="">{$order.create_time|date_format:'%Y-%m-%d %H:%M:%S'}</i> <span class="right red">已使用</span> </p>
+      <div>
+        {if $order.coupon_list}
+        {foreach from=$order.coupon_list item=coupon}
+        <p>{$coupon.title}</p>
+        {/foreach}
+        {/if}
+      </div>
+    </div>
+    {if $order.comment_id}
+    <section class="list-nav biz clear-padding">
+      <p class="col-grey clear-padding">我的评价</p>
+      <div class="item clear-padding">
+        <p>{$order.content}</p>
+        {if $order.photo_list}
+        <div class="imgs">
+          {foreach from=$order.photo_list item=photo}
+          <div class="wrap-img"><img data-preview-id="{$order.id}" src="{$photo}"></div>
+          {/foreach}
+        </div>
+        {/if}
+      </div>
+    </section>
+    {else}
+    <section><a class="evaluate-btn" href="wx/user/comment?orderid={$order.id}">去评价</a></section>
+    {/if}
+  </dd>
+</dl>
+{/foreach}

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/hhSwipe.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+		<title>输码验券</title>
+	</head>
+	<body>
+		<div class="wrap">
+			<header class="normal enter">
+				<input type="tel" autofocus="autofocus" maxlength="12" name="cardno" value="" placeholder="请输入优惠码"/>
+				<span class="info"></span>
+			</header>
+			<button type="button" name="cx" class="comm-btn">确定</button>
+		</div>
+    {literal} 
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $('button[name="cx"]').unbind('click').on('click', function() {
+			var cardno = $.trim($('input[name="cardno"]').val());
+			if (cardno.length <= 0) {
+				$('.info').html('请输入优惠码');
+			} else {
+				$.ajax({
+					async: true,
+					type: 'POST',
+					url: 'wx/merchant/entercode',
+					data: {
+						'cardno': cardno
+					},
+					dataType: 'JSON',
+					beforeSend: function() {},
+					success: function(json) {
+						if (json.code > 0) {
+							$('.info').html(json.message);
+						} else {
+							window.location.href= 'wx/merchant/couponorder?cardno=' + cardno;
+						}
+					},
+					error: function() {
+						$('.info').html('服务器内部错误');
+					}
+				});
+			}
+		});
+    });
+    </script> 
+    {/literal}
+    </body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/hhSwipe.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+		<title>{$product.goods_name}</title>
+	</head>
+
+	<body>
+		<div class="wrap">			
+			<div class="banner">
+				<div>
+					<img src="{if $product.goods_thumb}{$product.goods_thumb}{else}{$static_url}images/product.png{/if}" />
+				</div>
+			</div>
+			<div class="buy-box">
+				<div class="left">
+					<p class="name"><span class="col-normal">{$product.goods_name}</span></p>
+					<p class="name"><span>&yen;{$product.goods_price}/{$product.goods_unit}</span></p>
+				</div>
+			</div>
+			<dl class="product-miaoshu">
+				<dt>商品描述</dt>
+				<dd>{$product.goods_desc}</dd>
+			</dl>
+		</div>
+	</body>
+
+</html>

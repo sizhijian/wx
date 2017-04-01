@@ -1,0 +1,10 @@
+{foreach from=$list item=trade}
+<div class="items">
+  <div class="left">{$trade.trade_time|date_format:'%d'}<span class="col-grey">日</span></div>
+  <div class="center"></div>
+  <div class="right">
+    <p>{if $trade.trade_type}-{else}+{/if}{$trade.trade_amount}</p>
+    <p class="col-grey">{$trade.trade_desc}</p>
+  </div>
+</div>
+{/foreach}

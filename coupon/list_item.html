@@ -1,0 +1,10 @@
+{foreach from=$list item=coupon}
+<a href="wx/coupon/detail?id={$coupon.id}">
+<div class="wrap-img faj"> <img src="{if $coupon.thumb}{$coupon.thumb}{else}{$static_url}images/ticket_default.png{/if}"> </div>
+<div id="" class="relayout">
+  <p class="name">{$coupon.title}{if $coupon.class_id eq 2}<i class="zhe">折</i>{else}<i class="dai">代</i>{/if}</p>
+  <p class="zhekou">{$coupon.worth}</p>
+  <p class="address"><i class="integral">豆</i> 每100元赠送20乐豆 <span class="num">已领{$coupon.receive_total}张</span> </p>
+</div>
+</a>
+{/foreach}

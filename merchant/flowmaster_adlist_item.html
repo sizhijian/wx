@@ -1,0 +1,14 @@
+{foreach from=$list item=ads}
+<div class="item">
+  <div class="info">
+    <div class="wrap-img"> <img src="{if $ads.thumb}{$ads.thumb}{else}{$static_url}images/ticket_default.png{/if}"> </div>
+    <div class="center">
+      <p>{$ads.coupon_name}</p>
+      <p class="col-grey">{$ads.business_name}{$ads.branch_name}</p>
+      <p class="col-grey">{if $ads.class_id eq 2 or $ads.class_id eq 3}{$ads.worth_value|string_format:'%.1f'}折{else}&yen;{$ads.worth_value}{/if}</p>
+    </div>
+    <div class="right{if $ads.is_spread} active{/if}"> <a{if !$ads.is_spread} data-ads-id="{$ads.id}"{/if} href="javascript:;">我要推广</a> </div>
+  </div>
+  <p class="down">每核销一次获得<span class="col-red">{$ads.commission_rate * $base_rate}%</span>佣金，保底{$ads.lowest_amount * $base_rate}元佣金 </p>
+</div>
+{/foreach}

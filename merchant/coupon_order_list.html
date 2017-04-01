@@ -1,0 +1,24 @@
+{foreach from=$list item=order}
+<dl class="info-dl">
+  <dt class="col-grey">
+    <span class="wrap-img"><img src="{if $order.portrait}{$order.portrait}{else}{$static_url}images/temp-2.png{/if}"/></span>
+    会员ID:{$order.userno}
+    {if $order.order_status eq 0}
+    <a data-cancel-id="{$order.id}" class="cancel" href="javascript:;">取消</a>
+    {/if}
+  </dt>
+  <dd>
+    <p{if $order.order_status eq 0} onClick="location.href='wx/merchant/couponorderconfirm?orderno={$order.order_no}'"{/if}>订单编号：{$order.order_no} <span class="right">¥{$order.total_amount}</span> </p>
+    <div class="col-grey">
+      <p><i class="">{$order.create_time|date_format:'%Y-%m-%d %H:%M:%S'}</i>{if $order.order_status eq 1}<span data-status-id="{$order.id}" class="right">已付款</span>{elseif $order.order_status eq 2}<span data-status-id="{$order.id}" class="right">已取消</span>{else}<span data-status-id="{$order.id}" class="right col-red">待付款</span>{/if}</p>
+      <div>
+        {if $order.coupon_list}
+        {foreach from=$order.coupon_list item=coupon}
+        <p>{$coupon}</p>
+        {/foreach}
+        {/if}
+      </div>
+    </div>
+  </dd>
+</dl>
+{/foreach}

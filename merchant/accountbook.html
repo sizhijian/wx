@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<title>账本</title>
+	</head>
+
+	<body>
+		<div class="wrap">
+			<header class="accountbook">
+				<div class="left">
+					累计收入：{$income_total}
+				</div>
+				<div class="center"></div>
+				<div class="right">
+					累计支出：{$outlay_total}
+				</div>
+			</header>
+			<nav class="nav-tab">
+				<a data-trade-type="0" class="active" href="javascript:;">收益</a>
+				<a data-trade-type="1" href="javascript:;">支出</a>
+			</nav>
+			<div class="con-tab">
+				<div data-trade-list="0">
+					<div class="cell-normal">
+						{$date_limit}
+						<div class="arrive"></div>
+						<span>选择日期</span>
+					</div>
+                    <div id="income_list"></div>
+				</div>
+				<div data-trade-list="1" style="display:none">
+					<div class="cell-normal">
+						{$date_limit}
+						<div class="arrive"></div>
+						<span>选择日期</span>
+					</div>
+                    <div id="outlay_list"></div>
+				</div>
+			</div>
+		</div>
+	<script type="text/javascript">
+	//全局变量
+	var type = 0, date_limit = '{$date_limit_format}', page = 1, allow = true, has_load = false;
+	</script> 
+	{literal} 
+	<script type="text/javascript">
+	//加载明细
+	function loadAccountDetail() {
+		var obj = type == 1 ? $('#outlay_list') : $('#income_list');
+		if (allow && !has_load) {
+			has_load = true;
+			$.ajax({
+				async: true,
+				type: 'POST',
+				url: 'wx/merchant/loadaccountdetail',
+				data: {
+					'type': type,
+					'date_limit': date_limit,
+					'page': page
+				},
+				dataType: 'JSON',
+				beforeSend: function() {},
+				success: function(json) {
+					has_load = false;
+					if (json.code > 0) {
+						if (page == 1 && json.code == 3) {
+							obj.html('<div class="no-data">暂无相关数据</div>');
+						}
+						allow = false;
+					} else {
+						obj.append(json.content);
+						page++;
+					}
+				},
+				error: function() {
+					has_load = false;
+					obj.html('<div class="no-data">服务器内部错误</div>');
+				}
+			});
+		}
+	}
+	window.addEventListener('load', function () {
+		FastClick.attach(document.body);
+	}, false);
+	$(document).on('scroll', function() {
+		var a = $(document).scrollTop();
+		var b = $(document).height() - $(window).height();
+		if (a >= b) {
+			loadAccountDetail();
+		}
+	});
+	$(document).ready(function() {
+		loadAccountDetail();
+		$('[data-trade-type]').unbind('click').on('click', function() {
+			type = $(this).attr('data-trade-type');
+			page = 1;
+			allow = true;
+			has_load = false;
+			$('#income_list,#outlay_list').html('');
+			$('[data-trade-type]').removeClass('active');
+			$(this).addClass('active');
+			if (type == 1) {
+				$('[data-trade-list="0"]').hide();
+				$('[data-trade-list="1"]').show();
+			} else {
+				$('[data-trade-list="1"]').hide();
+				$('[data-trade-list="0"]').show();
+			}
+			loadAccountDetail();
+		});
+	});
+	</script> 
+	{/literal}
+    </body>
+
+</html>

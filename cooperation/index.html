@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css?v={$math}" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+        <script src="{$static_url}js/jquery.form.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/hhSwipe.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{$static_url}js/layer_mobile/layer.js" type="text/javascript" charset="utf-8"></script>
+		<title>商务合作</title>
+	</head>
+	<body>
+		<div class="wrap">
+			<form id="theform" name="theform" class="form-normal coop" method="post">
+				<p class="title">公司名称</p>
+				<input type="text" name="company" maxlength="50" value="" placeholder="请输入公司名称">
+				<p class="title">联系人<i class="must">*</i></p>
+				<input class="sex" type="text" name="contact_name" maxlength="20" value="" placeholder="请输入联系人姓名">
+				<ul class="select">
+					<li>
+						<input type="radio" name="sex" id="" value="0" checked="checked">
+						<i class="radio"></i>
+						<span class="name">先生</span>
+					</li>
+					<li>
+						<input type="radio" name="sex" id="" value="1">
+						<i class="radio"></i>
+						<span class="name">女士</span>
+					</li>
+				</ul>
+				<p class="title">联系电话<i class="must">*</i></p>
+				<input type="text" name="contact_phone" maxlength="20" value="" placeholder="请输入联系电话">
+				<p class="title">合作方向</p>
+				<ul class="select coop">
+					<li>
+						<input type="checkbox" name="type-coop[]" id="" value="1" checked="checked">
+						<i class="radio"></i>
+						<span class="name">商家入驻</span>
+					</li>
+					<li>
+						<input type="checkbox" name="type-coop[]" id="" value="2">
+						<i class="radio"></i>
+						<span class="name">广告推广</span>
+					</li>
+					<li>
+						<input type="checkbox" name="type-coop[]" id="" value="3">
+						<i class="radio"></i>
+						<span class="name">区域合伙人</span>
+					</li>
+                    <li>
+						<input type="checkbox" name="type-coop[]" id="" value="4">
+						<i class="radio"></i>
+						<span class="name">开通微信支付</span>
+					</li>
+					<li>
+						<input rel="power" type="checkbox" name="type-coop[]" id="" value="0">
+						<i class="radio"></i>
+						<span class="name">其它</span>
+					</li>
+				</ul>
+				<input type="text" name="coop_projects" maxlength="100" value="" readonly placeholder="请输入您想合作的方向">
+				<p class="title">所属城市</p>
+				<input type="text" name="address" maxlength="100" value="" placeholder="请输入所属城市">
+				<p class="title">所属行业</p>
+				<input type="text" name="industry_name" maxlength="100" value="" placeholder="请输入所属行业">
+				<p class="title">公司业务简介</p>
+				<textarea name="introduction" rows="5" cols="45" placeholder="请简要介绍公司业务"></textarea>
+				<input type="submit" class="comm-btn" name="" id="" value="提交" />
+			</form>
+		</div>
+	{literal} 
+	<script type="text/javascript">
+	$(document).ready(function() {
+		$('[rel="power"]').unbind('click').on('click', function() {
+			var seleted = $(this).is(':checked');
+			if (seleted) {
+				$('input[name="coop_projects"]').removeAttr('readonly');
+			} else {
+				$('input[name="coop_projects"]').attr('readonly', 'readonly').val('');
+			}
+		});
+		//提交
+		$('#theform').on('submit', function() {
+			var contact_name = $.trim($('input[name="contact_name"]').val());
+			var contact_phone = $.trim($('input[name="contact_phone"]').val());
+			var coop_type = '';
+			if (contact_name.length == 0) {
+				layer.open({
+					content: '请输入联系人姓名',
+					skin: 'msg',
+					time: 2
+				});
+				return false;
+			}
+			if (contact_phone.length == 0) {
+				layer.open({
+					content: '请输入联系电话',
+					skin: 'msg',
+					time: 2
+				});
+				return false;
+			}
+			$('input[name="type-coop[]"]').each(function() {
+				if ($(this).is(':checked')) {
+					if ($(this).val() != 0) {
+						if (coop_type.length > 0) {
+							coop_type += '，';
+						}
+						coop_type += $(this).val();
+					} else {
+						var coop_projects = $.trim($('input[name="coop_projects"]').val());
+						if (coop_projects.length == 0) {
+							layer.open({
+								content: '请输入您想合作的方向',
+								skin: 'msg',
+								time: 2
+							});
+							return false;
+						}
+					}
+				}
+			});
+			if (coop_type.length == 0) {
+				layer.open({
+					content: '请选择您想合作的方向',
+					skin: 'msg',
+					time: 2
+				});
+				return false;
+			}
+			var opts = {
+				async: true,
+				type: 'POST',
+				url: 'wx/cooperation/index',
+				data: {},
+				dataType: 'JSON',
+				resetForm: true,
+				beforeSend: function() {},
+				success: function(json) {
+					layer.open({
+						content: json.message,
+						skin: 'msg',
+						time: 2
+					});
+				},
+				error: function() {
+					layer.open({
+						content: '服务器内部错误',
+						skin: 'msg',
+						time: 2
+					});
+				}
+			};
+			$(this).ajaxSubmit(opts);
+			return false;
+		});
+	});
+	</script> 
+	{/literal}
+    </body>
+</html>

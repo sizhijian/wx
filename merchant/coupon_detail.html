@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+		<title>优惠券详情</title>
+	</head>
+
+	<body>
+		<div class="wrap">
+			<div class="banner">
+				<a class="mark-{if $coupon.class_id eq 2 or $coupon.class_id eq 3}zhekouquan{else}daijinquan{/if}">代金券</a>
+				<div>
+					<img src="{if $coupon.thumb}{$coupon.thumb}{else}{$static_url}images/ticket_default.png{/if}" />
+				</div>
+			</div>
+			<div class="num-box">
+				<div class="left">
+					<p class="col-grey">剩余</p>
+					<p>{$coupon.total_num}</p>
+				</div>
+				<div class="center">
+					<p class="col-grey">已发放</p>
+					<p>{$coupon.receive_total}</p>
+				</div>
+				<div class="right">
+					<p class="col-grey">已核销</p>
+					<p>{$coupon.used_total}</p>
+				</div>
+			</div>
+			<!--<dl class="product-miaoshu">
+				<dt>商品描述</dt>
+				<dd>商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述</dd>
+			</dl>-->
+			<dl class="product-miaoshu">
+				<dt>商家信息</dt>
+				<dd><div class="tit">{$coupon.business_name}{if $coupon.branch_name}-{$coupon.branch_name}{/if}</div>
+					<div class="con">{$coupon.province_name}{$coupon.city_name}{$coupon.district_name}{$coupon.address}</div>
+				</dd>
+			</dl>
+			<dl class="product-miaoshu">
+				<dt>使用说明</dt>
+				<dd>{$coupon.description}</dd>
+			</dl>
+		</div>
+	</body>
+
+</html>

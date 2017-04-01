@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/hhSwipe.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+		<title>个人中心</title>
+	</head>
+
+	<body>
+		<div class="wrap">
+            <div class="box_qrcode" id="box_qrcode" hidden>
+				<div class="allScreen"></div>
+				<div class="wrap-img">
+					<img src="{$qrcode}"/>
+				</div>
+			</div>
+			<div class="card-vip">
+				<div>
+					<img src="{if $level}{$level.card_image}{else}{$static_url}images/vip_normal.png{/if}"/>
+					<i class="qrcode">
+						<img src="{$qrcode}"/>
+					</i>
+					<span>ID：{$user.userno}</span>
+				</div>
+			</div>
+			<dl class="dl-nav">
+				<dt><span class="icon">
+					<img src="{if $user.portrait}{$user.portrait}{else}{$static_url}images/portrait.jpg{/if}"/>
+				</span>{if $user.nickname}{$user.nickname}{else}匿名{/if}</dt>
+				<dd>
+					<a href="wx/user/coupon">
+						<div class="wrap-img icon-2"></div>
+						<span>待使用</span>
+					</a>
+					<a href="wx/user/coupon?is_used=1">
+						<div class="wrap-img icon-3"></div>
+						<span>已使用</span>
+					</a>
+					<a href="wx/user/integral">
+						<div class="wrap-img icon-4"></div>
+						<span>乐豆</span>
+					</a>
+					<a href="wx/user/exchange">
+						<div class="wrap-img icon-5"></div>
+						<span>兑换记录</span>
+					</a>
+				</dd>
+			</dl>
+			<div class="list-nav">
+				<a href="wx/user/coupon">
+					<div class="icon icon-1"></div>我的优惠券<div class="arrive"></div>
+				</a>
+				<a href="wx/user/consume">
+					<div class="icon icon-5"></div>消费记录<div class="arrive"></div>
+				</a>
+				<a href="wx/user/profile">
+					<div class="icon icon-2"></div>个人设置<div class="arrive"></div>
+				</a>
+				<a href="wx/user/feedback">
+					<div class="icon icon-3"></div>意见反馈<div class="arrive"></div>
+				</a>
+				<a href="wx/user/about">
+					<div class="icon icon-4"></div>关于多乐券<div class="arrive"></div>
+				</a>
+			</div>			
+		</div>
+    </body>
+</html>

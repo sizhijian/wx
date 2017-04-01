@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/hhSwipe.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+		<title>会员信息</title>
+	</head>
+
+	<body>
+		<div class="wrap">
+			<header class="vip">
+				<div class="wrap-img">
+					<img src="{if $user.portrait}{$user.portrait}{else}{$static_url}images/temp-2.png{/if}">
+				</div>
+				<p>{if $user.nickname}{$user.nickname}{else}匿名{/if}</p>
+			</header>
+			<dl class="info-dl">
+				<dt class="col-grey">会员信息</dt>
+				<dd>
+					<p>ID：{$user.userno}</p>
+					<p>乐豆：{$user.integral_total}</p>
+					<p>会员等级：{$user.level_name}</p>
+					<p>手机号：{$user.mobile}</p>
+				</dd>
+			</dl>
+			<!--<a class="comm-btn" href="merchants-vip-list.html">发券</a>-->
+            <a class="comm-btn" href="wx/merchant/sendcoupon?uid={$user.id}">发券</a>
+		</div>
+	</body>
+
+</html>

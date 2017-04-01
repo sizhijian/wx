@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{$static_url}js/layer_mobile/layer.js" type="text/javascript" charset="utf-8"></script>
+		<title>发券</title>
+	</head>
+
+	<body>
+		<div class="wrap" style="padding-bottom:4.5rem">
+			<header class="info-title bgcol-blue">请选择1张优惠券，不支持多选</header>
+			<form id="theform" name="theform" action="" method="post">
+				<div class="list-ticket merchants select"></div>
+				<div class="bar-down only">
+					<input type="hidden" name="uid" value="{$user.id}">
+                    <a class="cancel" href="javascript:void(0)" onClick="history.back()">取消</a>
+					<input class="submit" type="submit" name="" id="" value="发券" />
+				</div>
+			</form>
+		</div>
+	<script type="text/javascript">
+	//全局变量
+	var page = 1, allow = true, has_load = false;
+	</script> 
+	{literal} 
+	<script type="text/javascript">
+	//加载列表
+	function loadCoupon() {
+		if (allow && !has_load) {
+			has_load = true;
+			$.ajax({
+				async: true,
+				type: 'POST',
+				url: 'wx/merchant/loadpushcouponlist',
+				data: {
+					'page': page
+				},
+				dataType: 'JSON',
+				beforeSend: function() {},
+				success: function(json) {
+					has_load = false;
+					if (json.code > 0) {
+						if (page == 1 && json.code == 3) {
+							$('.list-ticket').html('<div class="no-data">暂无相关数据</div>');
+						}
+						allow = false;
+					} else {
+						$('.list-ticket').append(json.content);
+						page++;
+					}
+				},
+				error: function() {
+					has_load = false;
+					$('.list-ticket').html('<div class="no-data">服务器内部错误</div>');
+				}
+			});
+		}
+	}
+	$(document).on('scroll', function() {
+		var a = $(document).scrollTop();
+		var b = $(document).height() - $(window).height();
+		if (a >= b) {
+			loadCoupon();
+		}
+	});
+	$(document).ready(function() {
+		loadCoupon();
+		$('#theform').on('submit', function() {
+			var uid = $('input[name="uid"]').val();
+			var couponid = $('input[name="type-ticket-select"]:checked').val();
+			$.ajax({
+				async: true,
+				type: 'POST',
+				url: 'wx/merchant/sendcoupon',
+				data: {
+					'uid': uid,
+					'couponid': couponid
+				},
+				dataType: 'JSON',
+				beforeSend: function() {},
+				success: function(json) {
+					layer.open({
+							content: json.message,
+							skin: 'msg',
+							time: 2
+						});
+					if (json.code == 0) {
+						
+						layer.open({
+							content: json.message,
+							skin: 'msg',
+							time: 3
+						});
+						setTimeout(function() {
+							location.href = 'wx/merchant/userlist';
+						}, 2000);
+						
+						
+						
+					}
+				},
+				error: function() {
+					layer.open({
+						content: '服务器内部错误',
+						skin: 'msg',
+						time: 2
+					});
+				}
+			});
+			return false;
+		});
+	});
+	</script> 
+	{/literal}
+    </body>
+
+</html>

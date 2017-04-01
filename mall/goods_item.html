@@ -1,0 +1,9 @@
+{foreach from=$list item=goods}
+<li onClick="window.location.href='wx/mall/detail?id={$goods.id}'">
+  <div class="wrap-img faj"><img src="{if $goods.goods_thumb}{$goods.goods_thumb}{else}{$static_url}images/product.png{/if}"></div>
+  <p>{$goods.goods_name}</p>
+  <p class="col-grey txt-through">原价：¥{$goods.goods_price}</p>
+  <p>兑换：{$goods.exchange_price}元+{$goods.integral_num}乐豆</p>
+  <a class="btn" href="wx/mall/order?id={$goods.id}">立即兑换</a>
+</li>
+{/foreach}

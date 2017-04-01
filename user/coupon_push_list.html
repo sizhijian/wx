@@ -1,0 +1,17 @@
+{foreach from=$list item=flowmaster}
+<div class="item">
+  <div class="left">
+    <a href="wx/unioncoupon/detail?id={$flowmaster.id}"><p>{if $flowmaster.class_id eq 2 or $flowmaster.class_id eq 3}{$flowmaster.worth_value|string_format:'%.1f'}折{else}￥{$flowmaster.worth_value|string_format:'%d'}{/if}</p>
+    <p>查看详情</p></a>
+  </div>
+  <div class="center">
+    <p>{$flowmaster.coupon_name}</p>
+    <dl class="calculator">
+      <dt><i rel="del" data-del-id="{$flowmaster.id}">-</i></dt>
+      <dd data-modify-id="{$flowmaster.id}" data-max-num="{$flowmaster.total}" data-receive-type="1">1</dd>
+      <dt><i rel="add" data-add-id="{$flowmaster.id}">+</i></dt>
+    </dl>
+  </div>
+  <a data-union-coupon-id="{$flowmaster.id}" class="right" href="javascript:void(0)">免<br />费<br />领<br />取</a>
+</div>
+{/foreach}

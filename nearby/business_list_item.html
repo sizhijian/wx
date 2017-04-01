@@ -1,0 +1,10 @@
+{foreach from=$list item=business}
+<a href="wx/nearby/detail?id={$business.id}">
+<div class="wrap-img faj"><img src="{if $business.photo}{$business.photo}{else}{$static_url}images/temp-1.png{/if}"></div>
+<div id="">
+  <p class="name">{$business.business_name}{if $business.branch_name}-{$business.branch_name}{/if}</p>
+  <p class="zhekou">{$business.cat_name} {if $business.juli lt 1000}{$business.juli}m{else}{($business.juli / 1000)|string_format:'%.1f'}km{/if}</p>
+  <p class="address">{$business.district_name}{$business.address}</p>
+</div>
+</a>
+{/foreach}

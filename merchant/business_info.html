@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/hhSwipe.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+		<title>门店信息</title>
+	</head>
+	<body>
+		<div class="wrap">
+			<form class="form-normal" method="post">
+				<p class="title">门店名称</p>
+				<input type="text" value="{$business.business_name}{if $business.branch_name}-{$business.branch_name}{/if}" readonly>
+				<p class="title">门店地址</p>
+				<input type="text" value="{$business.address}" readonly>
+				<p class="title">门店电话</p>
+				<input type="text" value="{$business.telephone}" readonly>
+			</form>
+		</div>
+	</body>
+</html>

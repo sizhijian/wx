@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/hhSwipe.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+		<title>关于多乐券</title>
+	</head>
+	<body bgcolor="#fff">
+		<div class="wrap">
+			<div class="info-QR-code">
+				<div class="wrap-img">
+					<img src="{if $cfg.wx_qrcode}{$cfg.wx_qrcode}{else}{$static_url}images/qrcode.jpg{/if}"/>
+				</div>
+				<p class="col-grey">扫一扫，关注多乐券</p>
+			</div>
+			<dl class="list-info">
+				<dt>关于多乐券</dt>
+				<dd class="col-grey">{$cfg.about_us}</dd>
+			</dl>
+            <dl class="info-vip">
+				<dt><p>我的会员等级：{$level.level_name}</p>
+					<p class="col-grey">{$level.level_desc}</p>
+				</dt>
+				<dd>
+					<div class="wrap-img">
+						<img src="{$level.card_image}">
+					</div>
+				</dd>
+			</dl>
+            <dl class="info-vip-level">
+				<dt>会员等级说明</dt>
+				<dd>
+					{if $level_list}
+                    {foreach from=$level_list item=dat}
+                    <p class="title">{$dat.level_name}</p>
+					<p class="col-grey">{$dat.level_desc}</p>
+                    {/foreach}
+                    {/if}
+				</dd>
+			</dl>
+		</div>
+	</body>
+</html>

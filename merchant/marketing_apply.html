@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/hhSwipe.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{$static_url}js/layer_mobile/layer.js" type="text/javascript" charset="utf-8"></script>
+		<title>特惠活动申请</title>
+	</head>
+	<body>
+		<div class="wrap">
+			<header class="info-title bgcol-orange">活动申请</header>
+			<dl class="info-dl marketing">
+				<dt class="col-grey">请选择您要申请的活动</dt>
+				<dd class="clear-p">
+					<div class="items">
+						<span class="value">
+							<input type="radio" name="type-marketing" id="" value="0" checked="checked">
+							<i class="radio"></i>
+						</span>
+						<span class="name">特惠优惠券活动申请</span>
+					</div>
+					<div class="items">
+						<span class="value">
+							<input type="radio" name="type-marketing" id="" value="1">
+							<i class="radio"></i>
+						</span>
+						<span class="name">特惠商家活动申请</span>
+					</div>
+				</dd>
+			</dl>
+			<a class="comm-btn" href="javascript:void(0);">确定</a>
+		</div>
+	<script type="text/javascript">
+	//全局变量
+	var has_load = false;
+	</script> 
+	{literal} 
+	<script type="text/javascript">
+	//提交申请
+	function applyMarketing() {
+		if (!has_load) {
+			has_load = true;
+			$.ajax({
+				async: true,
+				type: 'POST',
+				url: 'wx/merchant/applymarketing',
+				data: {
+					'offer_type': 1
+				},
+				dataType: 'JSON',
+				beforeSend: function() {},
+				success: function(json) {
+					has_load = false;
+					layer.open({
+						content: json.message,
+						skin: 'msg',
+						time: 2
+					});
+				},
+				error: function() {
+					has_load = false;
+					layer.open({
+						content: '服务器内部错误',
+						skin: 'msg',
+						time: 2
+					});
+				}
+			});
+		}
+	}
+	$(document).ready(function() {
+		$('.comm-btn').unbind('click').on('click', function() {
+			var type = parseInt($('input[name="type-marketing"]:checked').val());
+			if (!isNaN(type) && type > 0) {
+				applyMarketing();
+			} else {
+				
+			}
+		});
+	});
+	</script> 
+	{/literal}
+    </body>
+</html>

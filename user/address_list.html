@@ -1,0 +1,13 @@
+{foreach from=$list item=address}
+<li data-consignee-id="{$address.id}">
+  <p><span class="name">{$address.consignee}</span><span class="num">{$address.mobile}</span></p>
+  <p>{$address.province_name}{$address.city_name}{$address.district_name}{$address.address}</p>
+  <p class="down">
+    <span class="value">
+    <input data-set-default-id="{$address.id}" type="radio" name="is_default[]" value="1"{if $address.is_default} checked{/if}>
+    <i class="radio"></i> 默认地址
+    </span>
+    <span class="btns"><a href="wx/user/editaddress?id={$address.id}">编辑</a> <a data-delete-id="{$address.id}" id="delect_address" href="javascript:void(0)">删除</a></span>
+  </p>
+</li>
+{/foreach}

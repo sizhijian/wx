@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/hhSwipe.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{$static_url}js/jweixin-1.2.0.js" type="text/javascript" charset="utf-8"></script>
+		<title>更多商家</title>
+	</head>
+	<body>
+		<div class="wrap" style="padding-top: 5.926rem;">
+			<nav class="nav-tab biz p-fixed">
+				<a data-is-special="0" class="clear-m active" href="javascript:;">全部商家</a>
+				<a data-is-special="1" href="javascript:;">特惠商家</a>
+				<button hidden id="search_biz">搜索</button>
+			</nav>
+			<div class="list-biz">
+				<nav>
+					<div class="type active">美食</div>
+					<div class="location">附近</div>
+					<div class="desc">智能排序</div>
+				</nav>
+				<div class="con-tab-biz type-con">
+					<div class="">
+						<div class="allScreen"></div>
+						<nav name="type-biz">
+							{if $cat_list}
+                            {foreach from=$cat_list item=cat name=foo}
+                            {if $cat_id and $cat_id eq $cat.id}
+                            <a href="javascript:void(0);" class="active"><em>{$cat.cat_name}</em></a>
+                            {elseif $smarty.foreach.foo.index eq 0}
+                            <a href="javascript:void(0);" class="active"><em>{$cat.cat_name}</em></a>
+                            {else}
+                            <a href="javascript:void(0);"><em>{$cat.cat_name}</em></a>
+                            {/if}
+                            {/foreach}
+                            {/if}
+						</nav>
+                        {if $cat_list}
+                        {foreach from=$cat_list item=cat name=foo}
+						<div data-parent-cat-id="{$cat.id}" class="content">
+							{if $cat.sub_list}
+                            {foreach from=$cat.sub_list item=sub_cat name=sub_foo}
+                            {if $cat_id and $cat_id eq $sub_cat.id}
+                            <div data-cat-id="{$sub_cat.id}" class="active"><em>{$sub_cat.cat_name}</em><span>{$sub_cat.total}</span></div>
+                            {elseif $smarty.foreach.sub_foo.index eq 0}
+                            <div data-cat-id="{$sub_cat.id}" class="active"><em>{$sub_cat.cat_name}</em><span>{$sub_cat.total}</span></div>
+                            {else}
+                            <div data-cat-id="{$sub_cat.id}"><em>{$sub_cat.cat_name}</em><span>{$sub_cat.total}</span></div>
+                            {/if}
+                            {/foreach}
+                            {/if}
+						</div>
+                        {/foreach}
+                        {/if}
+					</div>
+				</div>
+				<div class="con-tab-biz location-con">
+					<div class="item">
+						<div class="allScreen"></div>
+						<nav name="type-biz">
+							<a data-region-id="0" class="active" href="javascript:void(0);">附近</a>
+							<section id="dist_list"></section>
+						</nav>
+						<div data-dist-id="0" class="content">
+							<div data-km-num="0" class="active">附近<span></span></div>
+							<div data-km-num="1">1km<span></span></div>
+							<div data-km-num="3">3km<span></span></div>
+							<div data-km-num="5">5km<span></span></div>
+							<div data-km-num="10">10km<span></span></div>
+							<div data-km-num="0">全城<span></span></div>
+						</div>
+                        <section id="dist_sub_list"></section>
+					</div>
+				</div>
+				<div class="con-tab-biz desc-con">
+					<div class="allScreen"></div>
+					<a data-sory-by="0" href="javascript:void(0)" class="active">智能排序</a>
+					<a data-sory-by="1" href="javascript:void(0)">离我最近</a>
+					<a data-sory-by="2" href="javascript:void(0)">人气最高</a>
+				</div>
+			</div>
+			<div class="list-col"></div>
+		</div>
+	<script type="text/javascript">
+	//全局变量
+	var _appId = '{$signPackage.appId}';
+	var _timestamp = '{$signPackage.timestamp}';
+	var _nonceStr = '{$signPackage.nonceStr}';
+	var _signature = '{$signPackage.signature}';
+	var latitude = 0;
+	var longitude = 0;
+	var speed = 0;
+	var accuracy = 0;
+	var cat_id = '{$cat_id}', circle_id = 0, distance = 0, is_special = -1, is_recommend = -1, keyword = '{$keyword}', sort_by = 0, page = 1, has_load = false;
+	</script> 
+	{literal} 
+	<script type="text/javascript">
+	wx.config({
+		debug: false,
+		appId: _appId,
+		timestamp: _timestamp,
+		nonceStr: _nonceStr,
+		signature: _signature,
+		jsApiList: [
+			'getLocation'
+		]
+	});
+	//加载商家列表
+	function loadBusinessList() {
+		if (!has_load) {
+			has_load = true;
+			$.ajax({
+				async: true,
+				type: 'POST',
+				url: 'wx/local/loadbusinesslist',
+				data: {
+					'latitude': latitude,
+					'longitude': longitude,
+					'cat_id': cat_id,
+					'circle_id': circle_id,
+					'distance': distance,
+					'is_special': is_special,
+					'is_recommend': is_recommend,
+					'keyword': keyword,
+					'sort_by': sort_by,
+					'page': page
+				},
+				dataType: 'JSON',
+				beforeSend: function() {},
+				success: function(json) {
+					has_load = false;
+					if (json.code > 0) {
+						if (page == 1 && json.code == 3) {
+							$('.list-col').html('<div class="no-data">暂无更多商家</div>');
+						}
+					} else {
+						$('.list-col').append(json.content);
+						page++;
+					}
+				},
+				error: function() {
+					has_load = false;
+					$('.list-col').html('<div class="no-data">服务器内部错误</div>');
+				}
+			});
+		}
+	}
+	wx.ready(function () {
+		wx.getLocation({
+			success: function (res) {
+				latitude = res.latitude;
+				longitude = res.longitude;
+				speed = res.speed;
+				accuracy = res.accuracy;
+				$.post('wx/local/loadbusinessdistrict', {
+					'latitude': latitude,
+					'longitude': longitude
+				}, function(json) {
+					loadBusinessList();
+					if (json.code == 0) {
+						var dist_list_html = '';
+						var dist_sub_list_html = '';
+						$.each(json.region_list, function(idx, region) {
+							dist_list_html += '<a data-region-id="' + region.id + '" href="javascript:void(0);">' + region.region_name + '</a>';
+							dist_sub_list_html += '<div data-dist-id="' + region.id + '" class="content">';
+							if (region.dist_list.length > 0) {
+								$.each(region.dist_list, function(ix, dist) {
+									dist_sub_list_html += '<div data-business-dist-id="' + dist.id + '">' + dist.business_district_name + '</div>';
+								});
+							}
+							dist_sub_list_html += '</div>';
+						});
+						$('#dist_list').html(dist_list_html);
+						$('#dist_sub_list').html(dist_sub_list_html);
+						$('[data-region-id]').unbind('click').on('click', function() {
+							$('[data-region-id]').removeClass('active');
+							$(this).addClass('active');
+							$('[data-dist-id]').hide();
+							$('[data-dist-id="' + $(this).attr('data-region-id') + '"]').show();
+						});
+						$('[data-business-dist-id]').unbind('click').on('click', function() {
+							distance = 0;
+							circle_id = $(this).attr('data-business-dist-id');
+							page = 1;
+							has_load = false;
+							$('[data-business-dist-id]').removeClass('active');
+							$(this).addClass('active');
+							$('.list-col').html('');
+							$('.location-con').hide();
+							$('.location').text($(this).text());
+							loadBusinessList();
+						});
+					}
+				}, 'JSON');
+			},
+			cancel: function (res) {
+				loadBusinessList();
+			}
+		});
+	});
+	$(document).on('scroll', function() {
+		var a = $(document).scrollTop();
+		var b = $(document).height() - $(window).height();
+		if (a >= b) {
+			loadBusinessList();
+		}
+	});
+	$(document).ready(function() {
+		$('[data-is-special]').unbind('click').on('click', function() {
+			is_special = parseInt($(this).attr('data-is-special'));
+			if (!isNaN(is_special) && is_special == 1) {
+				is_special = 1;
+			} else {
+				is_special = -1;
+			}
+			page = 1;
+			has_load = false;
+			$('[data-is-special]').removeClass('active');
+			$(this).addClass('active');
+			$('.list-col').html('');
+			loadBusinessList();
+		});
+		//选择行业
+		$('[data-cat-id]').unbind('click').on('click', function() {
+			cat_id = $(this).attr('data-cat-id');
+			page = 1;
+			has_load = false;
+			$('[data-cat-id]').removeClass('active');
+			$(this).addClass('active');
+			$('.list-col').html('');
+			$('.type-con').hide();
+			$('.type').text($(this).find('em').text());
+			loadBusinessList();
+		});
+		//选择距离
+		$('[data-km-num]').unbind('click').on('click', function() {
+			circle_id = 0;
+			distance = $(this).attr('data-km-num');
+			page = 1;
+			has_load = false;
+			$('[data-km-num]').removeClass('active');
+			$(this).addClass('active');
+			$('.list-col').html('');
+			$('.location-con').hide();
+			$('.location').text($(this).text());
+			loadBusinessList();
+		});
+		//选择排序方式
+		$('[data-sory-by]').unbind('click').on('click', function() {
+			sort_by = $(this).attr('data-sory-by');
+			page = 1;
+			has_load = false;
+			$('[data-sory-by]').removeClass('active');
+			$(this).addClass('active');
+			$('.list-col').html('');
+			$('.desc-con').hide();
+			$('.desc').text($(this).text());
+			loadBusinessList();
+		});
+	});
+	</script> 
+	{/literal}
+    </body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/hhSwipe.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{$static_url}js/layer_mobile/layer.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+		<title>收银</title>
+	</head>
+	<body>
+		<div class="wrap">
+			<div class="list-nav">
+				<a>
+					实收金额<span class="col-orange">{$order.total_amount}元</span>
+				</a>
+			</div>
+			<dl class="info-dl bgcol-trans">
+				<dt class="col-grey">折扣详细</dt>
+			</dl>
+			<div class="list-nav">
+				<a>
+					消费总金额<span class="col-orange">{$order.ori_total_amount}元</span>
+				</a>
+				<a>
+					不可折扣金额<span class="col-orange">{$order.not_discount}元</span>
+				</a>
+				<a>
+					积分抵扣<span class="col-orange">{$order.integral_arrived_money}元</span>
+				</a>
+			</div>
+			<div class="list-ticket merchants cashier">
+				<p class="col-grey">本次使用优惠券</p>
+				{if $coupon_list}
+                {foreach from=$coupon_list item=coupon}
+                <a>
+					<div class="info {if $coupon.class_id eq 2 or $coupon.class_id eq 3}zhekouquan{else}daijinquan{/if}">
+						<div class="wrap-img">
+							<img src="{if $coupon.thumb}{$coupon.thumb}{else}{$static_url}images/ticket_default.png{/if}">
+						</div>
+						<span class="col-orange">{if $coupon.class_id eq 2 or $coupon.class_id eq 3}{$coupon.worth_value|string_format:'%.1f'}折{else}¥{$coupon.worth_value}{/if}</span>
+						<span>{$coupon.title}</span>
+					</div>
+					<div class="down">
+						<span class="left col-grey">使用时间：{$coupon.begin_timestamp|date_format:'%Y.%m.%d'}-{$coupon.end_timestamp|date_format:'%Y.%m.%d'}</span>
+					</div>
+				</a>
+                {/foreach}
+                {/if}
+			</div>
+			<div class="bar-down cashier">
+                <input type="hidden" name="orderno" value="{$order.order_no}">
+                <button type="button" name="done" class="cancel">完成</button>
+				<button type="button" name="payment" class="submit">微信收银</button>
+			</div>
+		</div>
+        <div class="desk-layer"></div>
+        <div class="qrcode-layer"><img src="{$sk_qrcode}"></div>
+	{literal} 
+	<script type="text/javascript">
+	$(document).ready(function() {
+		$('.desk-layer,.qrcode-layer').unbind('click').on('click', function() {
+			$('.desk-layer,.qrcode-layer').hide();
+		});
+		$('button[name="payment"]').unbind('click').on('click', function() {
+			$('.desk-layer,.qrcode-layer').show();
+		});
+		$('button[name="done"]').unbind('click').on('click', function() {
+			window.location.href = 'wx/merchant/order';
+		});
+	});
+	</script> 
+	{/literal}
+    </body>
+</html>

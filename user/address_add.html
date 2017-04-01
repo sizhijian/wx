@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css">
+        <link rel="stylesheet" type="text/css" href="{$static_url}css/larea.css">
+		<script src="{$static_url}js/jquery.min.js"></script>
+        <script src="{$static_url}js/jquery.form.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/layer_mobile/layer.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{$static_url}js/larea_data.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/larea.js" type="text/javascript" charset="utf-8"></script>
+		<title>添加收货地址</title>
+	</head>
+	<body>
+		<div class="wrap">
+			<form action="" method="post" name="theform" id="theform">
+            <dl class="dl-address">
+				<dt class="col-grey">收货信息</dt>
+				<dd class="line-in">
+					<p><span class="name">收件人：</span><input type="text" name="consignee" maxlength="20" value="" placeholder="请填写收件人姓名"/></p>
+					<p><span class="name">地区：</span><input type="text" name="region" value="" readonly placeholder="点击选择收件地区"></p>
+					<p><span class="name">详细地址：</span><input type="text" name="address" maxlength="100" value="" placeholder="街道、楼牌号等"/></p>
+					<p><span class="name">联系电话：</span><input type="tel" name="mobile" maxlength="11" value="" placeholder="请填写联系电话"/></p>
+				</dd>
+			</dl>
+			<ul class="list-address">
+				<li>
+					<p class="down">
+						<span class="value">
+							<input type="checkbox" name="is_default_address" value="1" checked>
+							<i class="radio"></i>
+							设置为默认地址
+						</span>
+					</p>
+				</li>
+			</ul>
+			<div class="bar-down">
+				<input type="hidden" name="region_id" value="">
+                <button type="submit" name="submit" class="comm-btn only">确认</button>
+			</div>
+            </form>
+		</div>
+	</body>
+</html>
+{literal}
+<script type="text/javascript">
+$(document).ready(function() {
+	var area = new LArea();
+	area.init({
+		'trigger': 'input[name="region"]',
+		'valueTo': 'input[name="region_id"]',
+		'type': 1,
+		'keys': {
+			id: 'id',
+			name: 'name'
+		},
+		'data': lAreaData
+	});
+	$('#theform').on('submit', function() {
+		var region_id = $.trim($('input[name="region_id"]').val());
+		var consignee = $.trim($('input[name="consignee"]').val());
+		var address = $.trim($('input[name="address"]').val());
+		var mobile = $.trim($('input[name="mobile"]').val());
+		var is_default = ($('input[name="is_default_address"]').is(':checked')) ? 1 : 0;
+		var is_error = false;
+		if (consignee.length == 0) {
+			is_error = true;
+			layer.open({
+				content: '请填写收件人姓名',
+				skin: 'msg',
+				time: 2
+			});
+			return false;
+		}
+		if (region_id.length == 0 || region_id == '0') {
+			is_error = true;
+			layer.open({
+				content: '请选择收件地区',
+				skin: 'msg',
+				time: 2
+			});
+			return false;
+		}
+		if (address.length == 0) {
+			is_error = true;
+			layer.open({
+				content: '请填写详细地址（街道、楼牌号等）',
+				skin: 'msg',
+				time: 2
+			});
+			return false;
+		}
+		if (mobile.length == 0) {
+			is_error = true;
+			layer.open({
+				content: '请填写联系电话',
+				skin: 'msg',
+				time: 2
+			});
+			return false;
+		}
+		if (!is_error) {
+			var opts = {
+				async: true,
+				type: 'POST',
+				url: 'wx/user/addaddress',
+				data: {
+					'is_default': is_default
+				},
+				dataType: 'JSON',
+				beforeSend: function() {
+					layer.open({
+						content: 'loading……',
+						skin: 'msg',
+						time: 5
+					});
+				},
+				success: function(json) {
+					if (json.code > 0) {
+						layer.open({
+							content: json.message,
+							skin: 'msg',
+							time: 2
+						});
+					} else {
+						history.back(-1);
+					}
+				},
+				error: function() {
+					layer.open({
+						content: '服务器内部错误',
+						skin: 'msg',
+						time: 2
+					});
+				}
+			};
+			$(this).ajaxSubmit(opts);
+		}
+		return false;
+	});
+});
+</script>
+{/literal}

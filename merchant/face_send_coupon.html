@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+		<title>面对面发券</title>
+	</head>
+	<body>
+		<div class="wrap">
+			<form id="soform" name="soform" class="" action="" method="post">
+				<header class="normal p-fixed">
+					<input id="search_vip" class="input-search" type="text" name="keyword" value="" placeholder="昵称/会员ID/手机号">
+					<a rel="submit" href="javascript:void(0)">搜索</a>
+				</header>
+			</form>
+			<div class="list-vip"></div>
+		</div>
+	<script type="text/javascript">
+	//全局变量
+	var static_url = '{$static_url}';
+	var keyword = '', page = 1, allow = true, has_load = false;
+	</script> 
+	{literal} 
+	<script type="text/javascript">
+	//加载列表
+	function loadUserList() {
+		if (allow && !has_load) {
+			has_load = true;
+			$.ajax({
+				async: true,
+				type: 'POST',
+				url: 'wx/merchant/loadfacesendcouponuser',
+				data: {
+					'keyword': keyword,
+					'page': page
+				},
+				dataType: 'JSON',
+				beforeSend: function() {},
+				success: function(json) {
+					has_load = false;
+					if (json.code > 0) {
+						if (page == 1 && json.code == 3) {
+							$('.list-vip').html('<div class="no-data">暂无相关数据</div>');
+						}
+						allow = false;
+					} else {
+						$('.list-vip').append(json.content);
+						page++;
+					}
+				},
+				error: function() {
+					has_load = false;
+					$('.list-vip').html('<div class="no-data">服务器内部错误</div>');
+				}
+			});
+		}
+	}
+	$(document).on('scroll', function() {
+		var a = $(document).scrollTop();
+		var b = $(document).height() - $(window).height();
+		if (a >= b) {
+			loadUserList();
+		}
+	});
+	$(document).ready(function() {
+		loadUserList();
+		$('[rel="submit"]').unbind('click').on('click', function() {
+			$('#soform').submit();
+		});
+		$('#soform').on('submit', function() {
+			keyword = $.trim($('input[name="keyword"]').val());
+			page = 1;
+			allow = true;
+			has_load = false;
+			$('.list-vip').html('');
+			loadUserList();
+			return false;
+		});
+	});
+	</script> 
+	{/literal}
+    </body>
+</html>

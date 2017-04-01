@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/hhSwipe.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+		<title>领券</title>
+	</head>
+
+	<body>
+		<div class="wrap">
+			<header class="header">
+				<form action="" method="post" name="soform" id="soform">
+                <div class="left">北京</div>
+				<div class="center"><input type="text" name="keyword" maxlength="30" value="" placeholder="搜索优惠券名称"></div>
+				<div class="right"><a rel="submit" href="javascript:;">搜索</a></div>
+                </form>
+			</header>
+            {if $cat_array}
+			<div class="scroll">
+				<div class="scroll_box" id="scroll_menu">
+					<ul class="scroll_wrap">
+						{foreach from=$cat_array item=cat_list}
+                        <li>
+							<nav class="nav-menu">
+								{foreach from=$cat_list item=cat}
+                                <a href="wx/coupon/couponlist?catid={$cat.id}"><img src="{if $cat.cat_icon}{$cat.cat_icon}{else}{$static_url}images/nav-delicacy.png{/if}" /><span>{$cat.cat_name}</span></a>
+								{/foreach}
+							</nav>
+						</li>
+                        {/foreach}
+					</ul>
+				</div>
+				<ul class="scroll_position" id='scroll_position_menu'>
+					{foreach from=$cat_array name=foo item=cat_list}
+                    <li{if $smarty.foreach.foo.first} class="on"{/if}>
+						<a href="javascript:void(0);">{$smarty.foreach.foo.iteration}</a>
+					</li>
+					{/foreach}
+				</ul>
+			</div>
+            {/if}
+			<div class="scroll">
+				<div class="scroll_box" id="scroll_img">
+					<ul class="scroll_wrap">
+						{if $image_slider}
+                        {foreach from=$image_slider item=image}
+                        {if $image.link_url}
+                        <li><a href="{$image.link_url}"><img src="{$image.image_url}" width="100%"></a></li>
+                        {else}
+                        <li><img src="{$image.image_url}" width="100%"></li>
+                        {/if}
+                        {/foreach}
+                        {else}
+						<li><img src="{$static_url}images/guanggao.png" width="100%"></li>
+						{/if}
+					</ul>
+				</div>
+				<ul class="scroll_position" id='scroll_position'>
+					{if $image_slider}
+                    {foreach from=$image_slider item=image name=foo}
+                    <li{if $smarty.foreach.foo.index eq 0} class="on"{/if}>
+						<a href="javascript:void(0);">{$smarty.foreach.foo.index + 1}</a>
+					</li>
+					{/foreach}
+                    {/if}
+				</ul>
+			</div>
+			<div class="comm-title" style="margin-top: 0.678rem;">特惠活动</div>
+			<div class="list-col2">
+				{if $special_list}
+                {foreach from=$special_list item=coupon}
+                <a href="{$base_link}coupon/detail?id={$coupon.id}">
+					<div class="wrap-img faj">
+						<img src="{if $coupon.thumb}{$coupon.thumb}{else}{$static_url}images/ticket_default.png{/if}">
+					</div>
+					<dl>
+						<dt>{$coupon.title}</dt>
+						<dd><span>免费领取</span><i>{if $coupon.class_id eq 2 or $coupon.class_id eq 3}{floatval($coupon.worth_value)}折{else}面值：￥{$coupon.worth_value|string_format:'%d'}{/if}</i></dd>
+					</dl>
+				</a>
+                {/foreach}
+                {/if}
+			</div>
+			<div class="comm-title" style="margin-top: 0.678rem;">多乐推荐</div>
+			<div class="list-col">
+				{if $recommend_list}
+                {foreach from=$recommend_list item=coupon}
+                <a href="{$base_link}coupon/detail?id={$coupon.id}">
+					<div class="wrap-img faj">
+						<img src="{if $coupon.thumb}{$coupon.thumb}{else}{$static_url}images/ticket_default.png{/if}">
+					</div>
+					<div id="" class="relayout">
+						<p class="name">{$coupon.title}{if $coupon.class_id eq 2 or $coupon.class_id eq 3}<i class="zhe">折</i>{else}<i class="dai">代</i>{/if}</p>
+						<p class="zhekou">{if $coupon.class_id eq 2 or $coupon.class_id eq 3}<i>{floatval($coupon.worth_value)}</i>折{else}{$coupon.worth_value|string_format:'%d'}元{/if}</p>
+						<p class="address"><i class="integral">豆</i>
+							每100元赠送20乐豆   
+							<span class="num">已领{$coupon.receive_total}张</span>
+						</p>
+					</div>
+				</a>
+                {/foreach}
+                {/if}
+				<a href="wx/coupon/couponlist" class="more">
+					查看更多<span>&nbsp;&gt;</span>
+				</a>
+			</div>
+		</div>
+	</body>
+
+</html>
+{literal}
+<script type="text/javascript">
+$(document).ready(function() {
+	$('[rel="submit"]').unbind('click').on('click', function() {
+		$('#soform').submit();
+	});
+	$('#soform').on('submit', function() {
+		var keyword = $('#soform input[name="keyword"]').val();
+		window.location.href = 'wx/coupon/couponlist?keyword=' + keyword;
+		return false;
+	});
+});
+</script> 
+{/literal}

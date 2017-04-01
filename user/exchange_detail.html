@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/hhSwipe.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+		<title>兑换详情</title>
+	</head>
+	<body>
+		<div class="wrap">
+			<div class="list-col integral">
+				<div class="wrap-img faj">
+					<img src="{if $order_info.goods_thumb}{$order_info.goods_thumb}{else}{$static_url}images/product.png{/if}">
+				</div>
+				<div id="">
+					<p class="name">{$order_info.goods_name}</p>
+					<p class="col-orange">{$order_info.total_amount}元+{$order_info.integral_num}乐豆</p>
+					<p class="col-grey">{$order_info.create_time|date_format:'%Y-%m-%d %H:%M:%S'}</p>
+				</div>
+			</div>
+			<dl class="dl-list integral">
+				<dt class="col-grey">收货信息</dt>
+				<dd>
+					<p>收件人：{$order_info.consignee}</p>
+					<p>收货地址：{$order_info.consignee_mobile}</p>
+					<p>联系电话：{$order_info.consignee_address}</p>
+				</dd>
+			</dl>
+            {if $order_info.order_status eq 2 or $order_info.order_status eq 3 or $order_info.order_status eq 4}
+			<dl class="dl-list integral">
+				<dt class="col-grey">快递信息</dt>
+				<dd class="info-express">
+					<div class="express-name">{$order_info.express_cname}</div>
+					<section data-express-ename="{$order_info.express_ename}" data-express-no="{$order_info.express_no}">
+                    <div class="item">
+						<p class="name">您的订单开始处理</p>
+						<p class="col-grey">2016-11-11 23：00</p>
+					</div>
+					<div class="item">
+						<p class="name">快递已到达转运中心</p>
+						<p class="col-grey">2016-11-12 09：00</p>
+					</div>
+                    </section>
+				</dd>
+			</dl>
+            {/if}
+		</div>
+	<script type="text/javascript">
+	//全局变量
+	var static_url = '{$static_url}';
+	var page = 1, allow = true, has_load = false;
+	</script> 
+	{literal} 
+	<script type="text/javascript">
+	$(document).ready(function() {
+		if ($('[data-express-ename]').length > 0) {
+			var express_ename = $('[data-express-ename]').attr('data-express-ename');
+			var express_no = $('[data-express-no]').attr('data-express-no');
+			$.ajax({
+				async: true,
+				type: 'POST',
+				url: 'wx/user/traces',
+				data: {
+					'express_ename': express_ename,
+					'express_no': express_no
+				},
+				dataType: 'JSON',
+				beforeSend: function() {
+					$('[data-express-ename]').html('<img src="' + static_url + 'images/loader.gif">');
+				},
+				success: function(json) {
+					if (json.code > 0) {
+						$('[data-express-ename]').html(json.message);
+					} else {
+						var s = '';
+						$.each(json.traces, function(n, traces) {
+							s += '<div class="item">';
+							s += '<p class="name">' + traces.AcceptStation + '</p>';
+							s += '<p class="col-grey">' + traces.AcceptTime + '</p>';
+							s += '</div>';
+						});
+						$('[data-express-ename]').html(s);
+					}
+				},
+				error: function() {
+					$('[data-express-ename]').html('error');
+				}
+			});
+		}
+	});
+	</script> 
+	{/literal}
+    </body>
+</html>

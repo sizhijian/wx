@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/hhSwipe.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{$static_url}js/layer_mobile/layer.js" type="text/javascript" charset="utf-8"></script>
+		<title>面对面发券</title>
+	</head>
+
+	<body>
+		<div class="wrap">
+			<header class="vip">
+				<div class="wrap-img">
+					<img src="{if $user.portrait}{$user.portrait}{else}{$static_url}images/temp-2.png{/if}">
+				</div>
+				<p>{if $user.nickname}{$user.nickname}{else}匿名{/if}</p>
+			</header>
+			<dl class="info-dl">
+				<dt class="col-grey">会员信息</dt>
+				<dd>
+					<p>ID：{$user.userno}</p>
+					<p>乐豆：{$user.integral_total}</p>
+					<p>会员等级：{$user.level_name}</p>
+					<p>手机号：{$user.mobile}</p>
+				</dd>
+			</dl>
+            <a data-user-id="{$user.id}" class="comm-btn" href="javascript:void(0)">发券</a>
+		</div>
+	{literal} 
+	<script type="text/javascript">
+	$(document).ready(function() {
+		$('[data-user-id]').unbind('click').on('click', function() {
+			var user_id = $(this).attr('data-user-id');
+			$.ajax({
+				async: true,
+				type: 'POST',
+				url: 'wx/merchant/sendcoupontouser',
+				data: {
+					'user_id': user_id
+				},
+				dataType: 'JSON',
+				beforeSend: function() {},
+				success: function(json) {
+					if (json.code > 0) {
+						layer.open({
+							content: json.message,
+							skin: 'msg',
+							time: 2
+						});
+					} else {
+						layer.open({
+							content: json.message,
+							skin: 'msg',
+							time: 2
+						});
+					}
+				},
+				error: function() {
+					layer.open({
+						content: '服务器内部错误',
+						skin: 'msg',
+						time: 2
+					});
+				}
+			});
+		});
+	});
+	</script> 
+	{/literal}
+    </body>
+</html>

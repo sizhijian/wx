@@ -1,0 +1,10 @@
+{foreach from=$list item=order}
+<div class="list-col integral exchange" onClick="javascript:window.location.href='wx/mall/detail?id={$order.goods_id}'">
+  <div class="wrap-img faj"><img src="{if $order.goods_thumb}{$order.goods_thumb}{else}{$static_url}images/product.png{/if}"></div>
+  <div>
+    <p class="name">{$order.goods_name}</p>
+    <p class="col-grey">{$order.create_time|date_format:'%Y-%m-%d %H:%M:%S'}</p>
+    <p><a class="col-orange btn" href="wx/user/exchangedetail?id={$order.id}">查看详情</a></p>
+  </div>
+</div>
+{/foreach}

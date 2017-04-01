@@ -1,0 +1,11 @@
+{foreach from=$list item=flowmaster}
+<dd>
+  <a class="item fa" href="wx/merchant/flowmasterdetail?id={$flowmaster.id}"> <img src="{if $flowmaster.thumb}{$flowmaster.thumb}{else}{$static_url}images/ticket_default.png{/if}"/>
+  <div>
+    <p>{$flowmaster.coupon_name}</p>
+    <p class="col-grey">{$flowmaster.business_name}{$flowmaster.branch_name}</p>
+  </div>
+  <img class="arrive" src="{$static_url}images/arrive-right.png"/>
+  </a>
+</dd>
+{/foreach}

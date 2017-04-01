@@ -1,0 +1,10 @@
+{foreach from=$list item=coupon}
+<div class="item">
+  <a data-select-id="{$coupon.id}" href="javascript:void(0)">
+  <div class="info {if $coupon.class_id eq 2 or $coupon.class_id eq 3}zhekouquan{else}daijinquan{/if}">
+    <div class="wrap-img"> <img src="{if $coupon.thumb}{$coupon.thumb}{else}{$static_url}images/ticket_default.png{/if}"> </div>
+    <span class="col-orange">{if $coupon.class_id eq 2 or $coupon.class_id eq 3}{floatval($coupon.worth_value)}折{else}¥{$coupon.worth_value|string_format:'%d'}{/if}</span> <span>{$coupon.title}</span> </div>
+  <div class="down"> <span class="left col-grey">使用时间：{if $coupon.timing_type}{$coupon.become_time|date_format:'%Y.%m.%d'}-{$coupon.invalid_time|date_format:'%Y.%m.%d'}{else}自领取后{$coupon.fixed_term}天内有效{/if}</span>  </div>
+  </a>
+</div>
+{/foreach}

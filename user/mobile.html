@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+        <script src="{$static_url}js/jquery.form.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/layer_mobile/layer.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+		<title>绑定手机号</title>
+	</head>
+	<body>
+		<div class="wrap">
+			<form action="" method="post" name="theform" id="theform">
+            <div class="list-nav" style="margin-top: 0.892rem;">
+				<a>
+					手机号：
+					<input type="text" name="mobile" id="mobile" value="{$user.mobile}" placeholder="请输入手机号"/>
+				</a>
+				<!--<a>
+					验证码：
+					<input type="text" name="vercode" id="vercode" value="" placeholder="请输入验证码"/>
+					<i class="check-code">获取验证码</i>
+				</a>-->
+			</div>
+			<button type="submit" name="submit" class="comm-btn">提交</button>
+            </form>
+		</div>
+	{literal} 
+	<script type="text/javascript">
+	$(document).ready(function() {
+		//提交
+		$('#theform').on('submit', function() {
+			var mobile = $.trim($(this).find('input[name="mobile"]').val());
+			if (mobile.length == 0) {
+				layer.open({
+					content: '请输入手机号',
+					skin: 'msg',
+					time: 2
+				});
+				return false;
+			}
+			var opts = {
+				async: true,
+				type: 'POST',
+				url: 'wx/user/mobile',
+				data: {},
+				dataType: 'JSON',
+				beforeSend: function() {},
+				success: function(json) {
+					layer.open({
+						content: json.message,
+						skin: 'msg',
+						time: 2
+					});
+				},
+				error: function() {
+					layer.open({
+						content: '服务器内部错误',
+						skin: 'msg',
+						time: 2
+					});
+				}
+			};
+			$(this).ajaxSubmit(opts);
+			return false;
+		});
+	});
+	</script> 
+	{/literal}
+    </body>
+</html>

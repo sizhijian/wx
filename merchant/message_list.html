@@ -1,0 +1,9 @@
+{foreach from=$list item=message}
+<li>
+<div class="title">
+  <p><img src="{$static_url}images/icon-msg.png"/>{$message.title}</p>
+  <p class="col-grey">{$message.create_time|date_format:'%Y-%m-%d'}</p>
+</div>
+<p class="con">{$message.content}</p>
+</li>
+{/foreach}

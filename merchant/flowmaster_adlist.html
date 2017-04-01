@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/hhSwipe.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{$static_url}js/layer_mobile/layer.js" type="text/javascript" charset="utf-8"></script>
+		<title>新增推广</title>
+	</head>
+	<body>
+		<div class="wrap" style="padding-top: 6.5rem;">
+			
+			<nav class="nav-tab biz" hidden>
+			</nav>
+			<div class="list-biz" style="top: 0;">
+				<header class="normal">
+					<form action="" method="post" name="soform" id="soform">
+                    <input type="text" name="keyword" maxlength="30" value="" placeholder="请输入商家名称">
+                    </form>
+				</header>
+				<nav>
+					<div class="type">行业</div>
+					<div class="ticket">距离</div>
+					<div class="desc">佣金</div>
+				</nav>
+				<div class="con-tab-biz type-con" hidden>
+					<div class="">
+						<div class="allScreen"></div>
+						<nav name="type-biz">
+							{if $cat_list}
+                            {foreach from=$cat_list item=cat}
+                            <a href="javascript:void(0);">{$cat.cat_name}</a>
+                            {/foreach}
+                            {/if}
+						</nav>
+                        {if $cat_list}
+                        {foreach from=$cat_list item=cat}
+						<div class="content">
+							{if $cat.sub_cat_list}
+                            {foreach from=$cat.sub_cat_list item=sub_cat}
+                            <div data-cat-id="{$sub_cat.id}">{$sub_cat.cat_name}<span>{$sub_cat.total}</span></div>
+							{/foreach}
+                            {/if}
+						</div>
+                        {/foreach}
+                        {/if}
+					</div>
+				</div>
+				<div class="con-tab-biz ticket-con" hidden>
+					<div class="allScreen"></div>
+                    {if $juli_list}
+                    {foreach from=$juli_list item=juli}
+                    <a data-distance-id="{$juli.value}" href="javascript:void(0)"><i>{$juli.text}</i><span>{$juli.total}</span></a>
+					{/foreach}
+                    {/if}
+				</div>
+				<div class="con-tab-biz desc-con" hidden>
+					<div class="allScreen"></div>
+					<a data-rate-id="0" href="javascript:void(0)">不限</a>
+                    <a data-rate-id="5" href="javascript:void(0)"><i>5</i>%以上</a>
+					<a data-rate-id="10" href="javascript:void(0)"><i>10</i>%以上</a>
+					<a data-rate-id="20" href="javascript:void(0)"><i>20</i>%以上</a>
+				</div>
+			</div>
+			<div class="list-llz"></div>
+		</div>
+	<script type="text/javascript">
+	//全局变量
+	var cat_id = 0, latitude = '{$business.latitude}', longitude = '{$business.longitude}', distance = 0, rate = 0, keyword = '';
+	var page = 1, allow = true, has_load = false;
+	</script> 
+	{literal} 
+	<script type="text/javascript">
+	//新增推广
+	function addFlowMaster(id) {
+		$.ajax({
+			async: true,
+			type: 'POST',
+			url: 'wx/merchant/flowmasteradlist',
+			data: {
+				'id': id
+			},
+			dataType: 'JSON',
+			beforeSend: function() {},
+			success: function(json) {
+				layer.open({
+					content: json.message,
+					skin: 'msg',
+					time: 2
+				});
+				if (json.code == 0) {
+					$('[data-ads-id="' + id + '"]').removeAttr('data-ads-id').parent().addClass('active');
+				}
+			},
+			error: function() {
+				layer.open({
+					content: '服务器内部错误',
+					skin: 'msg',
+					time: 2
+				});
+			}
+		});
+	}
+	//加载列表
+	function loadAdvertiserList() {
+		if (allow && !has_load) {
+			has_load = true;
+			$.ajax({
+				async: true,
+				type: 'POST',
+				url: 'wx/merchant/loadadvertiserselectlist',
+				data: {
+					'cat_id': cat_id,
+					'latitude': latitude,
+					'longitude': longitude,
+					'distance': distance,
+					'rate': rate,
+					'keyword': keyword,
+					'page': page
+				},
+				dataType: 'JSON',
+				beforeSend: function() {},
+				success: function(json) {
+					has_load = false;
+					if (json.code > 0) {
+						if (page == 1 && json.code == 3) {
+							$('.list-llz').html('<p><div class="no-data">暂无相关数据</div></p>');
+						}
+						allow = false;
+					} else {
+						$('.list-llz').append(json.content);
+						$('[data-ads-id]').unbind('click').on('click', function() {
+							var id = $(this).attr('data-ads-id');
+							addFlowMaster(id);
+						});
+						page++;
+					}
+				},
+				error: function() {
+					has_load = false;
+					$('.list-llz').html('<p><div class="no-data">服务器内部错误</div></p>');
+				}
+			});
+		}
+	}
+	$(document).on('scroll', function() {
+		var a = $(document).scrollTop();
+		var b = $(document).height() - $(window).height();
+		if (a >= b) {
+			loadAdvertiserList();
+		}
+	});
+	$(document).ready(function() {
+		loadAdvertiserList();
+		$('[data-cat-id]').unbind('click').on('click', function() {
+			cat_id = $(this).attr('data-cat-id');
+			$('.con-tab-biz').hide();
+			$('.list-llz').html('');
+			page = 1;
+			allow = true;
+			has_load = false;
+			loadAdvertiserList();
+		});
+		$('[data-distance-id]').unbind('click').on('click', function() {
+			distance = $(this).attr('data-distance-id');
+			$('.con-tab-biz').hide();
+			$('.list-llz').html('');
+			page = 1;
+			allow = true;
+			has_load = false;
+			loadAdvertiserList();
+		});
+		$('[data-rate-id]').unbind('click').on('click', function() {
+			rate = $(this).attr('data-rate-id');
+			$('.con-tab-biz').hide();
+			$('.list-llz').html('');
+			page = 1;
+			allow = true;
+			has_load = false;
+			loadAdvertiserList();
+		});
+		$('#soform').on('submit', function() {
+			keyword = $('input[name="keyword"]').val();
+			$('.list-llz').html('');
+			page = 1;
+			allow = true;
+			has_load = false;
+			loadAdvertiserList();
+			return false;
+		});
+	});
+	</script> 
+	{/literal}
+    </body>
+</html>

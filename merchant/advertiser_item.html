@@ -1,0 +1,20 @@
+{if $type eq 3}
+{foreach from=$list item=ads}
+<a href="javascript:void(0);">
+<div class="info">
+  <p class="name col-grey">{$ads.coupon_name}</p>
+  <p class="col-grey">{$ads.end_time|date_format:'%Y.%m.%d'}已过期</p>
+</div>
+<div class="down"> <span class="left col-grey"><img src="{if $ads.thumb}{$ads.thumb}{else}{$static_url}images/icon-ticket-out.png{/if}" class="timeout"/>预计发放{$ads.total_num}张，已发放{$ads.send_total}张</span> </div>
+</a>
+{/foreach}
+{else}
+{foreach from=$list item=ads}
+<a href="javascript:void(0);">
+<div class="info {if $ads.class_id eq 2 or $ads.class_id eq 3}zhekouquan{else}daijinquan{/if}">
+  <div class="wrap-img"> <img src="{if $ads.thumb}{$ads.thumb}{else}{$static_url}images/ticket_default.png{/if}"> </div>
+  <span class="col-orange">{if $ads.class_id eq 2 or $ads.class_id eq 3}{floatval($ads.worth_value)}折{else}¥{$ads.worth_value|string_format:'%d'}{/if}</span> <span>{$ads.coupon_name}</span> </div>
+<div class="down"> <span class="left col-grey">使用时间：{if $ads.timing_type}{$ads.become_time|date_format:'%Y.%m.%d'}-{$ads.invalid_time|date_format:'%Y.%m.%d'}{else}自领取后{$ads.fixed_term}天内有效{/if}</span> </div>
+</a>
+{/foreach}
+{/if}

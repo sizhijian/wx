@@ -1,0 +1,14 @@
+{foreach from=$list name=foo item=coupon}
+<div class="item">
+  <div class="value">
+    <input type="radio" name="type-ticket-select" id="" value="{$coupon.id}"{if $smarty.foreach.foo.index eq 0} checked{/if}>
+    <i class="radio"></i>
+  </div>
+  <a href="wx/merchant/coupondetail?id={$coupon.id}">
+  <div class="info {if $coupon.class_id eq 2 or $coupon.class_id eq 3}zhekouquan{else}daijinquan{/if}">
+    <div class="wrap-img"> <img src="{$static_url}images/ticket_default.png"> </div>
+    <span class="col-orange">{$coupon.worth}</span> <span>{$coupon.title}</span> </div>
+  <div class="down"> <span class="left col-grey">使用时间：{if $coupon.timing_type}{$coupon.become_time|date_format:'%Y.%m.%d'}-{$coupon.invalid_time|date_format:'%Y.%m.%d'}{else}自领券后{$coupon.fixed_term}天内有效{/if}</span> <span class="right col-grey">查看详情</span> <img src="{$static_url}images/arrive-right.png"> </div>
+  </a>
+</div>
+{/foreach}

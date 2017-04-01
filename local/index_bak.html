@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/hhSwipe.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+		<title>本地商家</title>
+	</head>
+
+	<body>
+		<div class="wrap">
+			<header class="header">
+				<div class="left">北京</div>
+				<div class="center"><input type="text" name="" id="" value="" placeholder="搜索商家名称"></div>
+				<div class="right"><a href=""></a></div>
+			</header>			
+			{if $cat_array}
+			<div class="scroll">
+				<div class="scroll_box" id="scroll_menu">
+					<ul class="scroll_wrap">
+						{foreach from=$cat_array item=cat_list}
+                        <li>
+							<nav class="nav-menu">
+								{foreach from=$cat_list item=cat}
+                                <a href="wx/local/businesslist?catid={$cat.id}"><img src="{if $cat.cat_icon}{$cat.cat_icon}{else}{$static_url}images/nav-delicacy.png{/if}" /><span>{$cat.cat_name}</span></a>
+								{/foreach}
+							</nav>
+						</li>
+                        {/foreach}
+					</ul>
+				</div>
+				<ul class="scroll_position" id='scroll_position_menu'>
+					{foreach from=$cat_array name=foo item=cat_list}
+                    <li{if $smarty.foreach.foo.first} class="on"{/if}>
+						<a href="javascript:void(0);">{$smarty.foreach.foo.iteration}</a>
+					</li>
+					{/foreach}
+				</ul>
+			</div>
+            {/if}
+			<div class="guanggao">
+				<img src="{$static_url}images/guanggao.png"/>
+			</div>
+			<div class="comm-title">特惠商家</div>
+			<div class="list-col2">
+				{if $special_list}
+                {foreach from=$special_list item=special}
+                <a href="wx/local/detail?id={$special.id}">
+					<div class="wrap-img faj">
+						<img src="{if $special.photo}{$special.photo}{else}{$static_url}images/temp-1.png{/if}">
+					</div>
+					<dl>
+						<dt>{$special.business_name}{if $special.branch_name}-{$special.branch_name}{/if}</dt>
+						<dd><span>{$special.cat_name}</span><i>{$special.district_name}</i></dd>
+					</dl>
+				</a>
+                {/foreach}
+                {/if}
+			</div>
+			<div class="comm-title">多乐推荐</div>
+			<div class="list-col">
+				{if $recommend_list}
+                {foreach from=$recommend_list item=recommend name=foo}
+                <a href="wx/local/detail?id={$recommend.id}">
+					<div class="wrap-img faj">
+						<img src="{if $recommend.photo}{$recommend.photo}{else}{$static_url}images/temp-1.png{/if}">
+					</div>
+					<div id="">
+						<p class="name">{$recommend.business_name}{if $recommend.branch_name}-{$recommend.branch_name}{/if}</p>
+						<p class="zhekou">{$recommend.cat_name}</p>
+						<p class="address">{$recommend.district_name}{$recommend.address}</p>
+					</div>
+				</a>
+                {if $smarty.foreach.foo.index eq 5}
+                <div class="guanggao">
+					<img src="{$static_url}images/guanggao.png"/>
+				</div>
+                {/if}
+                {/foreach}
+                {/if}
+				<a href="wx/local/businesslist" class="more">
+					查看更多商家<span>&nbsp;&gt;</span>
+				</a>
+			</div>
+		</div>
+	</body>
+
+</html>

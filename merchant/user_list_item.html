@@ -1,0 +1,14 @@
+{if $page eq 1}
+<a class="faj" href="javascript:;">会员数量：{$total}</a>
+{/if}
+{if $total}
+{foreach from=$list item=user}
+<a class="fa" href="wx/merchant/userinfo?id={$user.user_id}">
+<div class="wrap-img"> <img src="{if $user.portrait}{$user.portrait}{else}{$static_url}images/temp-2.png{/if}"/> </div>
+<div class="info">
+  <p>{if $user.nickname}{$user.nickname}{else}匿名{/if}</p>
+  <p class="col-grey">{$user.mobile}</p>
+</div>
+</a>
+{/foreach}
+{/if}

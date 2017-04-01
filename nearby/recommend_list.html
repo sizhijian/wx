@@ -1,0 +1,10 @@
+{foreach from=$recommend_list item=recommend}
+<a href="wx/nearby/detail?id={$recommend.id}">
+<div class="wrap-img faj"> <img src="{if $recommend.photo}{$recommend.photo}{else}{$static_url}images/temp-1.png{/if}"> </div>
+<div id="">
+  <p class="name">{$recommend.business_name}{if $recommend.branch_name}-{$recommend.branch_name}{/if}</p>
+  <p class="zhekou">{$recommend.cat_name}</p>
+  <p class="address">{$recommend.district_name}{$recommend.address}</p>
+</div>
+</a>
+{/foreach}

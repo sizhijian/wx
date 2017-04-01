@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/layer_mobile/layer.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+		<title>流量主提现</title>
+	</head>
+	<body>
+		<div class="wrap">
+			<div class="info-money">
+				<p>
+					<span class="col-grey">佣金帐户（元）</span>
+					<span class="num">{$lave_total}</span>	
+				</p>
+				<div class="fa">
+					<p>提现金额</p>
+					<span></span>
+					<input type="number" name="total_amount" maxlength="10" placeholder="请输入提现金额">
+				</div>
+			</div>
+			<div class="info-wram">
+				<span class="left">温馨提示：</span>
+				<span class="right">
+					<p>1.请先开通微信钱包，否则提现将无法到账</p>
+					<p>2.提现后5个工作日内到账</p>
+				</span>
+			</div>
+			<a rel="transout" class="comm-btn" href="javascript:;">确认</a>
+			<div class="txt-down txt-center">
+				<p class="col-grey">如提现未正常到账 </p>
+				<p class="col-grey">请联系客服：<a href="tel:010-57168899" class="col-blue">010-57168899</a></p>
+			</div>
+		</div>
+	<script type="text/javascript">
+	var total_amount = 0, has_load = false;
+	</script>
+    {literal}
+	<script type="text/javascript">
+	$(document).ready(function() {
+		$('[rel="transout"]').unbind('click').on('click', function() {
+			total_amount = parseFloat($('input[name="total_amount"]').val());
+			total_amount = (!isNaN(total_amount) && total_amount >= 1) ? total_amount : 0;
+			if (total_amount && !has_load) {
+				has_load = true;
+				$.ajax({
+					async: true,
+					type: 'POST',
+					url: 'wx/merchant/flowmastertransout',
+					data: {
+						'total_amount': total_amount
+					},
+					dataType: 'JSON',
+					beforeSend: function() {},
+					success: function(json) {
+						has_load = false;
+						if (json.code > 0) {
+							layer.open({
+								content: json.message,
+								skin: 'msg',
+								time: 2
+							});
+						} else {
+							layer.open({
+								content: json.message,
+								skin: 'msg',
+								time: 5
+							});
+							setTimeout(function() {
+								location.reload();
+							}, 2000);
+						}
+					},
+					error: function() {
+						has_load = false;
+						layer.open({
+							content: '服务器内部错误',
+							skin: 'msg',
+							time: 2
+						});
+					}
+				});
+			}
+		});
+	});
+    </script>
+    {/literal}
+    </body>
+</html>

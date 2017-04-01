@@ -1,0 +1,11 @@
+{foreach from=$list item=product}
+<div class="product">
+  <a href="wx/product/detail?id={$product.id}">
+  <div class="wrap-img"><img src="{if $product.goods_thumb}{$product.goods_thumb}{else}{$static_url}images/temp-1.png{/if}"></div>
+  <div class="info">
+    <p>{$product.goods_name}</p>
+    <p>￥{$product.goods_price}元/{$product.goods_unit}</p>
+  </div>
+  </a>
+</div>
+{/foreach}

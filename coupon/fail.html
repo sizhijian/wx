@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+		<script src="{$static_url}js/jquery.min.js"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/hhSwipe.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+		<title>领取失败</title>
+	</head>
+	<body>
+		<div class="wrap">
+			<div class="info-result ticket">
+				<img src="{$static_url}images/icon-fail.png"/>
+				<div class="col-red">
+					领取失败
+				</div>
+			</div>
+			<div class="bar-down">
+				<a class="cancel" href="wx/coupon/index">返回领券</a>
+				<a class="submit" href="javascript:void(0)" onClick="history.back()">重新领取</a>
+			</div>
+		</div>
+	</body>
+</html>
