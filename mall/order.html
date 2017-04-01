@@ -12,7 +12,6 @@
 		<script src="{$static_url}js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="{$static_url}js/jquery.form.js" type="text/javascript" charset="utf-8"></script>
 		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
-		<script src="{$static_url}js/hhSwipe.js" type="text/javascript" charset="utf-8"></script>
 		<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
         <script src="{$static_url}js/larea_data.js" type="text/javascript" charset="utf-8"></script>
 		<script src="{$static_url}js/larea.js" type="text/javascript" charset="utf-8"></script>
@@ -99,15 +98,79 @@
 						<span data-default-text="mobile" class="num">{$consignee.mobile}</span>
 					</p>
 					<p data-default-text="address">{$consignee.province_name}{$consignee.city_name}{$consignee.district_name}{$consignee.address}</p>
+					<p class="down">
+						<span class="value">
+							<input type="radio" name="address" id="" value="" checked="checked"/>
+							<i class="radio"></i>默认地址</span>
+						<span class="btns">
+							<a href="personal_address_edit.html">编辑</a>
+							<a id="delect_address">删除</a>
+						</span>
+					</p>
 				</li>
                 {/foreach}
                 {/if}
+				<li>
+					<a href="javascript:;" class="comm-btn">添加新地址</a>
+				</li>
 			</ul>
           </div>
         </div>
         <div class="swiper-scrollbar"></div>
       </div>
     </div>
+		<br />
+		<br />
+		<br />
+		<br />
+		<!-- 新增收货地址 -->
+		<div id="addAddress">
+			<dl class="dl-address">
+				<dt class="col-grey">收货信息</dt>
+				<dd class="line-in">
+					<p><span class="name">收件人：</span><input type="text" placeholder="请填写收件人姓名"/></p>
+					<p><span class="name">地区：</span><input type="text" placeholder="点击选择收件地区"/></p>
+					<p><span class="name">街道：</span><input type="text" placeholder="点击选择收件街道"/></p>
+					<p><span class="name">详细地址：</span><input type="text" placeholder="请填写详细地址"/></p>
+					<p><span class="name">联系电话：</span><input type="text" placeholder="请填写联系电话"/></p>
+				</dd>
+			</dl>
+			<ul class="list-address">
+				<li>
+					<p class="down">
+						<span class="value">
+							<input type="checkbox" name="address" id="" value="">
+							<i class="radio"></i>
+							设置为默认地址
+						</span>
+					</p>
+				</li>
+			</ul>
+			<div class="bar-down" style="position: static;">
+				<a href="personal_address_list.html" class="comm-btn only">确认</a>
+			</div>
+		</div>
+		<br />
+		<br />
+		<br />
+		<br />
+		<!-- 修改收货地址 -->
+		<div id="editAddress">
+			<dl class="dl-address">
+				<dt class="col-grey">收货信息</dt>
+				<dd class="line-in">
+					<p><span class="name">收件人：</span><input type="text" placeholder="请填写收件人姓名" value="何玉然"/></p>
+					<p><span class="name">地区：</span><input type="text" placeholder="点击选择收件地区" value="北京市大兴区"/></p>
+					<p><span class="name">街道：</span><input type="text" placeholder="点击选择收件街道" value="玉泉路256号"/></p>
+					<p><span class="name">详细地址：</span><input type="text" placeholder="请填写详细地址" value="宏源大厦20-16室"/></p>
+					<p><span class="name">联系电话：</span><input type="text" placeholder="请填写联系电话" value="190-0090-2209"/></p>
+				</dd>
+			</dl>
+			<div class="bar-down" style="position: static;">
+				<a id="delect_address" class="cancel">删除</a>
+				<a href="personal_address_list.html" class="submit">确认</a>
+			</div>
+		</div>
     <script type="text/javascript">
 	var swiper = null;
 	var default_consignee = '{if $default_consignee}1{/if}';
