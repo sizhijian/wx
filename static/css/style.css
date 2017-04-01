@@ -324,7 +324,8 @@ header.accountbook .center{width: 0.5%;height: 2.035rem;background: #6e9ebc;floa
 header.accountbook .left,header.accountbook .right{text-align: center;color: #fff;width: 49.75%;float: left;line-height: 2.035rem;}
 .nav-tab a:first-of-type{margin-left: 16.6666%;}
 
-.con-tab .cell-normal{height: 3.214rem;line-height: 3.214rem;overflow: hidden;display: block;padding-left: 4%;margin-bottom: 1px;}
+.con-tab .cell-normal{height: 3.214rem;line-height: 3.214rem;overflow: hidden;display: block;padding-left: 4%;margin-bottom: 1px;position: relative;}
+.con-tab .cell-normal input{background: transparent;position: absolute;line-height: 3.214rem;left: 0;top: 0;width: 100%;text-indent: 3%;font-size: 1.1rem;}
 .con-tab .cell-normal .arrive{float: right;margin-right: 3.9%;height: 100%;width: 2.2%;background: url(../images/arrive-right.png) no-repeat center;background-size: 100%;}
 .con-tab .cell-normal span{float: right;margin-right: 3%;color: #999;}
 .con-tab .items{padding:0.714rem 0;background: #fff;overflow: hidden;margin-bottom: 1px;}
@@ -391,8 +392,8 @@ header.normal input.input-search ~ a,header.normal input.input-search ~ input[ty
 .list-ticket.merchants .info.daijinquan{background: url(../images/icon-daijinquan.png) no-repeat right top;background-size: 18%;}
 .list-ticket.merchants .info.zhekouquan{background: url(../images/icon-zhekouquan.png) no-repeat right top;background-size: 18%;}
 .list-ticket.merchants a{background: url(../images/bg-ticket.png) no-repeat center;background-size: 100% 100%;display: block;}
-.list-ticket.merchants .info .wrap-img{font-size: 0;width: 15.6%;margin: 0 2.9% 0 5.4%;display: inline-block;line-height: 2.357rem;}
-.list-ticket.merchants .info .wrap-img img{display: inline-block;vertical-align: middle;}
+.list-ticket.merchants .info .wrap-img{font-size: 0;width: 15.6%;margin: 0 2.9% 0 5.4%;display: inline-block;height: 2.357rem;}
+.list-ticket.merchants .info .wrap-img img{display: inline-block;vertical-align: middle;height: 100%;}
 .list-ticket.merchants .info span{display: inline-block;vertical-align: bottom;}
 .list-ticket.merchants .info span.col-orange{font-size: 1.487rem;}
 .list-ticket.merchants .down{height: 2.214rem;line-height: 2.214rem;padding: 0 4.5% 0 5.4%;font-size: 0;}
@@ -535,7 +536,7 @@ dl.dl-list dd>p span.col-orange{font-size: 1.1rem;}
 dl.dl-list dd>p span.name,dl.dl-address dd p span.name{width: 25%;display: inline-block;}
 dl.dl-list dd.line-in>p:after{position: absolute;bottom: 0;height: 1px;width: 100%;content: "";background: #f0f0f0;}
 .dl-list.integral dt{line-height: 3.214rem;}
-dl.dl-address dt{line-height: 3.214rem;padding: 0 4%;background: #fff;margin-bottom: 1px;}
+dl.dl-address dt{line-height: 3.214rem;padding: 0 4%;background: #fff;margin-bottom: 1px;font-size: 1rem;}
 dl.dl-address dt a{    line-height: 1.642rem;
     height: 1.642rem;
     text-align: center;
@@ -798,8 +799,6 @@ header.normal.enter .info{position: absolute;left: 3%;top: 7.178rem;color: #fff;
 .del-btn{position: absolute;top: -4%;right: -4%;width: 1.35rem;height:1.35rem;line-height:.9rem;border-radius: 50%;background: red;color: #fff!important;display: block;text-align: center;font-size: 2rem;z-index: 5;}
 .list-col.integral.exchange .wrap-img{height: 5rem;}
 .list-col.integral.exchange .wrap-img img{max-height: 100%;max-width: 100%;height: auto;width: auto;}
-
-
 .desk-layer{display:none;z-index:9998;position:fixed;top:0;left:0;width:100%;height:100%;background:#000;opacity:0.5;filter:alpha(opacity=50)}
 .qrcode-layer{display:none;z-index:9999;position:fixed;top:50%;left:50%;margin:-35vw 0 0 -35vw;width:70vw;height:70vw;background-color:#fff;-moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px;box-shadow:0 0 10px rgba(102, 102, 102, 1);-webkit-box-shadow:0 0 10px rgba(102, 102, 102, 1);-moz-box-shadow:0 0 10px rgba(102, 102, 102, 1)}
 .qrcode-layer img{width:100%}
