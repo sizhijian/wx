@@ -587,6 +587,7 @@ dl.dl-address dd p input{display: inline-block;line-height: inherit;}
 .list-nav.biz .item .title>img{width: 7%;border-radius: 50%;margin-right: 3%;}
 .list-nav.biz .item>.imgs{font-size: 0;border-bottom: 1px solid #f0f0f0;padding-bottom: .8rem;}
 .list-nav.biz .item>.imgs div.wrap-img{width: 23%;margin-right: 2%;display: inline-block;}
+.list-nav.biz .item>.imgs img{height: 4rem;}
 
 .list-col.biz+.title{background: #fff;margin-bottom: 1px;line-height: 2.964rem;}
 
