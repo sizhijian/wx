@@ -804,3 +804,5 @@ header.normal.enter .info{position: absolute;left: 3%;top: 7.178rem;color: #fff;
 .qrcode-layer{display:none;z-index:9999;position:fixed;top:50%;left:50%;margin:-35vw 0 0 -35vw;width:70vw;height:70vw;background-color:#fff;-moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px;box-shadow:0 0 10px rgba(102, 102, 102, 1);-webkit-box-shadow:0 0 10px rgba(102, 102, 102, 1);-moz-box-shadow:0 0 10px rgba(102, 102, 102, 1)}
 .qrcode-layer img{width:100%}
 [rel="upload-thumb"] img{max-width:100%;max-height:200px}
+.wrap-img-prod{height: 5rem;padding: .5rem 3%;height: 18rem;}
+.wrap-img-prod img{height: auto;width: auto;max-width: 100%;max-height: 100%;}
