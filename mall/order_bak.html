@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <base href="{$base_url}">
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="{$static_url}css/style.css" />
+        <link rel="stylesheet" type="text/css" href="{$static_url}css/larea.css">
+		<script src="{$static_url}js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{$static_url}js/jquery.form.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/activity.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{$static_url}js/larea_data.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$static_url}js/larea.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{$static_url}js/layer_mobile/layer.js" type="text/javascript" charset="utf-8"></script>
+		<title>订单填写</title>
+	</head>
+	<body>
+		<div class="wrap">
+			<form action="" method="post" name="theform" id="theform">
+            <div class="list-col integral">
+				<div class="wrap-img faj">
+					<img src="{if $goods.goods_thumb}{$goods.goods_thumb}{else}{$static_url}images/product.png{/if}">
+				</div>
+				<div id="">
+					<p class="name">{$goods.goods_name}</p>
+					<p class="txt-through">原价：{$goods.goods_price}元</p>
+					<p class="col-grey">数量：1</p>
+				</div>
+			</div>
+			<dl class="dl-list integral">
+				<dt class="col-grey">支付信息</dt>
+				<dd>
+					<p><span class="name">现金：</span><span class="col-orange">{$goods.exchange_price}元</span></p>
+					<p><span class="name">乐豆：</span>{$goods.integral_num}</p>
+				</dd>
+			</dl>
+            {if $default_consignee}
+			<dl class="dl-address">
+				<dt class="col-grey">收货信息<a rel="change-address" href="javascript:void(0)">更换地址</a></dt>
+				<dd class="line-in">
+					<p><span class="name">收件人：</span>{$default_consignee.consignee}</p>
+					<p><span class="name">收货地址：</span>{$default_consignee.province_name}{$default_consignee.city_name}{$default_consignee.district_name}{$default_consignee.address}</p>
+					<p><span class="name">联系电话：</span>{$default_consignee.mobile}</p>
+				</dd>
+			</dl>
+            {else}
+            <dl class="dl-address">
+				<dt class="col-grey">收货信息</dt>
+				<dd class="line-in">
+					<p><span class="name">收件人：</span><input type="text" name="consignee" maxlength="20" value="" placeholder="请填写收件人姓名"></p>
+					<p><span class="name">地区：</span><input type="text" name="region" value="" readonly placeholder="点击选择收件地区"></p>
+					<p><span class="name">详细地址：</span><input type="text" name="address" maxlength="100" value="" placeholder="街道、楼牌号等"></p>
+					<p><span class="name">联系电话：</span><input type="text" name="mobile" maxlength="20" value="" placeholder="请填写联系电话"></p>
+				</dd>
+			</dl>
+			{/if}
+            <input type="hidden" name="id" value="{$id}">
+            <input type="hidden" name="region_id" value="0">
+            <input type="hidden" name="consignee_id" value="{if $default_consignee}{$default_consignee.id}{else}0{/if}">
+			<button type="submit" class="comm-btn clearfix">确认</button>
+            </form>
+		</div>
+		<div id="selectAddress" style="display:none">
+			<ul class="list-address integral">
+				{if $consignee_list} {foreach from=$consignee_list item=consignee}
+				<li>
+					{if $consignee.is_default}
+					<p class="col-orange">
+						当前默认地址
+					</p>
+					{/if}
+					<p>
+						<span class="name">{$consignee.consignee}</span>
+						<span class="num">{$consignee.mobile}</span>
+					</p>
+					<p>{$consignee.province_name}{$consignee.city_name}{$consignee.district_name}{$consignee.address}</p>
+					<p class="down">
+						<span class="value">
+							<input type="radio" name="address" id="" value="" checked="checked"/>
+							<i class="radio"></i>默认地址</span>
+						<span class="btns">
+							<a href="personal_address_edit.html">编辑</a>
+							<a id="delect_address">删除</a>
+						</span>
+					</p>
+				</li>
+				{/foreach} {/if}
+				<li>
+					<a href="javascript:;" class="comm-btn">添加新地址</a>
+				</li>
+			</ul>
+		</div>
+		<br />
+		<br />
+		<br />
+		<br />
+		<!-- 新增收货地址 -->
+		<div id="addAddress">
+			<dl class="dl-address">
+				<dt class="col-grey">收货信息</dt>
+				<dd class="line-in">
+					<p><span class="name">收件人：</span><input type="text" placeholder="请填写收件人姓名"/></p>
+					<p><span class="name">地区：</span><input type="text" placeholder="点击选择收件地区"/></p>
+					<p><span class="name">街道：</span><input type="text" placeholder="点击选择收件街道"/></p>
+					<p><span class="name">详细地址：</span><input type="text" placeholder="请填写详细地址"/></p>
+					<p><span class="name">联系电话：</span><input type="text" placeholder="请填写联系电话"/></p>
+				</dd>
+			</dl>
+			<ul class="list-address">
+				<li>
+					<p class="down">
+						<span class="value">
+							<input type="checkbox" name="address" id="" value="">
+							<i class="radio"></i>
+							设置为默认地址
+						</span>
+					</p>
+				</li>
+			</ul>
+			<div class="bar-down" style="position: static;">
+				<a href="personal_address_list.html" class="comm-btn only">确认</a>
+			</div>
+		</div>
+		<br />
+		<br />
+		<br />
+		<br />
+		<!-- 修改收货地址 -->
+		<div id="editAddress">
+			<dl class="dl-address">
+				<dt class="col-grey">收货信息</dt>
+				<dd class="line-in">
+					<p><span class="name">收件人：</span><input type="text" placeholder="请填写收件人姓名" value="何玉然"/></p>
+					<p><span class="name">地区：</span><input type="text" placeholder="点击选择收件地区" value="北京市大兴区"/></p>
+					<p><span class="name">街道：</span><input type="text" placeholder="点击选择收件街道" value="玉泉路256号"/></p>
+					<p><span class="name">详细地址：</span><input type="text" placeholder="请填写详细地址" value="宏源大厦20-16室"/></p>
+					<p><span class="name">联系电话：</span><input type="text" placeholder="请填写联系电话" value="190-0090-2209"/></p>
+				</dd>
+			</dl>
+			<div class="bar-down" style="position: static;">
+				<a id="delect_address" class="cancel">删除</a>
+				<a href="personal_address_list.html" class="submit">确认</a>
+			</div>
+		</div>
+    {literal} 
+	<script type="text/javascript">
+	function done() {
+		$('#theform').on('submit', function() {
+			var id = parseInt($('input[name="id"]').val());
+			var region_id = $.trim($('input[name="region_id"]').val());
+			var consignee_id = parseInt($('input[name="consignee_id"]').val());
+			var consignee = $.trim($('input[name="consignee"]').val());
+			var address = $.trim($('input[name="address"]').val());
+			var mobile = $.trim($('input[name="mobile"]').val());
+			var is_error = false;
+			if (isNaN(id) || id <= 0) {
+				is_error = true;
+				layer.open({
+					content: '请选择兑换商品',
+					skin: 'msg',
+					time: 2
+				});
+				return false;
+			}
+			if (isNaN(consignee_id)) {
+				is_error = true;
+				layer.open({
+					content: '请选择收货地址',
+					skin: 'msg',
+					time: 2
+				});
+				return false;
+			} else {
+				if (consignee_id <= 0) {
+					if (consignee.length == 0) {
+						is_error = true;
+						layer.open({
+							content: '请填写收件人姓名',
+							skin: 'msg',
+							time: 2
+						});
+						return false;
+					}
+					if (region_id.length == 0 || region_id == '0') {
+						is_error = true;
+						layer.open({
+							content: '请选择收件地区',
+							skin: 'msg',
+							time: 2
+						});
+						return false;
+					}
+					if (address.length == 0) {
+						is_error = true;
+						layer.open({
+							content: '请填写详细地址（街道、楼牌号等）',
+							skin: 'msg',
+							time: 2
+						});
+						return false;
+					}
+					if (mobile.length == 0) {
+						is_error = true;
+						layer.open({
+							content: '请填写联系电话',
+							skin: 'msg',
+							time: 2
+						});
+						return false;
+					}
+				}
+			}
+			if (!is_error) {
+				var opts = {
+					async: true,
+					type: 'POST',
+					url: 'wx/mall/order',
+					data: {},
+					dataType: 'JSON',
+					beforeSend: function() {
+						layer.open({
+							content: 'loading……',
+							skin: 'msg',
+							time: 5
+						});
+					},
+					success: function(json) {
+						if (json.code > 0) {
+							layer.open({
+								content: json.message,
+								skin: 'msg',
+								time: 2
+							});
+						} else {
+							window.location.href = 'wx/mall/payment?id=' + json.order_id;
+						}
+					},
+					error: function() {
+						layer.open({
+							content: '服务器内部错误',
+							skin: 'msg',
+							time: 2
+						});
+					}
+				};
+				$(this).ajaxSubmit(opts);
+			}
+			return false;
+		});
+	}
+	$(document).ready(function() {
+		var area = new LArea();
+		area.init({
+			'trigger': 'input[name="region"]',
+			'valueTo': 'input[name="region_id"]',
+			'type': 1,
+			'keys': {
+				id: 'id',
+				name: 'name'
+			},
+			'data': lAreaData
+		});
+		$('[rel="change-address"]').on('click', function() {
+			$('#selectAddress').show();
+		});
+		done();
+	});
+	</script> 
+	{/literal}
+    </body>
+</html>

@@ -45,14 +45,17 @@
                         {if $cat_list}
                         {foreach from=$cat_list item=cat name=foo}
 						<div data-parent-cat-id="{$cat.id}" class="content">
-							{if $cat.sub_list}
-                            {foreach from=$cat.sub_list item=sub_cat name=sub_foo}
-                            {if $cat_id and $cat_id eq $sub_cat.id}
-                            <div data-cat-id="{$sub_cat.id}" class="active"><em>{$sub_cat.cat_name}</em><span>{$sub_cat.total}</span></div>
-                            {elseif $smarty.foreach.sub_foo.index eq 0}
-                            <div data-cat-id="{$sub_cat.id}" class="active"><em>{$sub_cat.cat_name}</em><span>{$sub_cat.total}</span></div>
+							{if $cat_id eq 0 or $cat_id eq $cat.id}
+                            <div data-cat-id="{$cat.id}" class="active">全部<span></span></div>
                             {else}
-                            <div data-cat-id="{$sub_cat.id}"><em>{$sub_cat.cat_name}</em><span>{$sub_cat.total}</span></div>
+                            <div data-cat-id="{$cat.id}">全部<span></span></div>
+                            {/if}
+                            {if $cat.sub_list}
+                            {foreach from=$cat.sub_list item=sub_cat}
+                            {if $cat_id and $cat_id eq $sub_cat.id}
+                            <div data-cat-id="{$sub_cat.id}" class="active"><em>{$sub_cat.cat_name}</em><span></span></div>
+                            {else}
+                            <div data-cat-id="{$sub_cat.id}"><em>{$sub_cat.cat_name}</em><span></span></div>
                             {/if}
                             {/foreach}
                             {/if}
